@@ -1,4 +1,5 @@
-import { Flex, FlexProps } from '@chakra-ui/react'
+import { Flex, FlexProps } from '@chakra-ui/react';
+import React from 'react';
 
 export const Container = (props: FlexProps) => (
   <Flex
@@ -14,4 +15,4 @@ export const Container = (props: FlexProps) => (
     transition="all 0.15s ease-out"
     {...props}
   />
-)
+);
