@@ -6,6 +6,7 @@ export const Container = (props: FlexProps) => (
     direction="column"
     alignItems="center"
     justifyContent="flex-start"
+    // flexGrow={1}
     bg="gray.50"
     color="black"
     _dark={{
