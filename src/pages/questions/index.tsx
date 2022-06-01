@@ -1,16 +1,60 @@
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
-import { Heading } from '@chakra-ui/react';
+import { QuestionsCard } from '@/components/QuestionsList';
+import { Box, Divider, Grid, GridItem, Heading } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
 
-export default function questions() {
+const questions = [
+  {
+    id: '1',
+    content: '',
+  },
+  {
+    id: '2',
+    content: '',
+  },
+  {
+    id: '3',
+    content: '',
+  },
+  {
+    id: '4',
+    content: '',
+  },
+  {
+    id: '5',
+    content: '',
+  },
+  {
+    id: '6',
+    content: '',
+  },
+];
+
+export default function questionsPage() {
   return (
     <Container flexGrow={1}>
-      <Heading>Questions</Heading>
+      <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
+        <GridItem colSpan={2} border="1px">
+          1
+        </GridItem>
+        <GridItem colSpan={8}>
+          <Heading>Questions</Heading>
+          {questions.map((question) => (
+            <Box key={question.id}>
+              <QuestionsCard w={'100%'} questionId={question.id} />
+              <Divider />
+            </Box>
+          ))}
+        </GridItem>
+        <GridItem colSpan={2} border="1px">
+          3
+        </GridItem>
+      </Grid>
     </Container>
   );
 }
 
-questions.getLayout = function getLayout(page: ReactElement) {
+questionsPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
