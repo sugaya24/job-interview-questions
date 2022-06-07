@@ -77,7 +77,7 @@ const QuestionsCard = (props: Props) => {
         </Box>
         <HStack className={'bottom-part'}>
           {tags.map((tag, index) => (
-            <NextLink key={index} href={`/tags/${tag}`}>
+            <NextLink key={index} href={`/tags/${tag}`} passHref>
               <Link
                 _hover={{
                   textDecor: 'none',

@@ -1,6 +1,7 @@
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { QuestionsCard } from '@/components/QuestionsList';
+import { SearchTags } from '@/components/searchtagas';
 import { Box, Divider, Grid, GridItem, Heading } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
 
@@ -35,8 +36,8 @@ export default function questionsPage() {
   return (
     <Container flexGrow={1}>
       <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={2} border="1px">
-          1
+        <GridItem colSpan={2}>
+          <SearchTags />
         </GridItem>
         <GridItem colSpan={8}>
           <Heading>Questions</Heading>
