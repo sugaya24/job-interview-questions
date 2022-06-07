@@ -1,6 +1,7 @@
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { QuestionsCard } from '@/components/QuestionsList';
+import { TrendingQuestions } from '@/components/TrendingQuestions';
 import { SearchTags } from '@/components/searchtagas';
 import { Box, Divider, Grid, GridItem, Heading } from '@chakra-ui/react';
 import React, { ReactElement } from 'react';
@@ -39,7 +40,7 @@ export default function questionsPage() {
         <GridItem colSpan={2}>
           <SearchTags />
         </GridItem>
-        <GridItem colSpan={8}>
+        <GridItem colSpan={7}>
           <Heading>Questions</Heading>
           {questions.map((question) => (
             <Box key={question.id}>
@@ -48,8 +49,8 @@ export default function questionsPage() {
             </Box>
           ))}
         </GridItem>
-        <GridItem colSpan={2} border="1px">
-          3
+        <GridItem colSpan={3}>
+          <TrendingQuestions />
         </GridItem>
       </Grid>
     </Container>
