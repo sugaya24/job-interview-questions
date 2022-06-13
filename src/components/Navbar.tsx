@@ -20,6 +20,7 @@ import {
 import NextLink from 'next/link';
 import React from 'react';
 
+import CreatePostButton from './CreatePostButton';
 import Searchbar from './common/Searchbar';
 
 const Links = [
@@ -83,6 +84,7 @@ export default function Navbar() {
           <Flex alignItems={'center'}>
             <HStack>
               <Searchbar w={`300px`} display={{ base: `none`, md: `flex` }} />
+              <CreatePostButton />
               <Menu>
                 <MenuButton
                   as={Button}
