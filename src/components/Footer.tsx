@@ -1,4 +1,4 @@
-import { Center, Flex, FlexProps, Text, theme } from '@chakra-ui/react';
+import { Center, Flex, FlexProps, Text } from '@chakra-ui/react';
 import React from 'react';
 
 export const Footer = (props: FlexProps) => {
@@ -7,6 +7,7 @@ export const Footer = (props: FlexProps) => {
       as={'footer'}
       w={'100%'}
       h={'50px'}
+      flexShrink={0}
       borderTop={`1px`}
       borderColor={'gray.200'}
       _dark={{
