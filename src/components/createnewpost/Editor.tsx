@@ -89,13 +89,14 @@ export default function Editor({ onChange }: Props) {
         <Divider />
         <Box
           className="editor-inner"
-          h={'100%'}
-          minH={'0'}
           w={'100%'}
           flexGrow={1}
+          flexBasis={0}
           pos={'relative'}
           flexWrap={'nowrap'}
           overflowY={'auto'}
+          bgColor={'white'}
+          borderBottomRadius={'2xl'}
         >
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
