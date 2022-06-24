@@ -21,6 +21,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@lexical/react": "^0.3.2",
+    "firebase": "^9.8.3",
     "framer-motion": "^6",
     "html-react-parser": "^1.4.14",
     "lexical": "^0.3.2",

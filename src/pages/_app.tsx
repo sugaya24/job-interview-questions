@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/contexts';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -20,8 +21,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return getLayout(
-    <ChakraProvider resetCSS theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>,
+    <AuthProvider>
+      <ChakraProvider resetCSS theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </AuthProvider>,
   );
 }
