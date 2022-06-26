@@ -17,7 +17,7 @@ import {
 import React, { ReactElement } from 'react';
 import { BiEdit } from 'react-icons/bi';
 
-const userProfile = () => {
+const userProfile = ({ user }) => {
   return (
     <Container flexGrow={1}>
       <Flex
@@ -39,7 +39,7 @@ const userProfile = () => {
               src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
             />
           </Box>
-          <Heading>Achim Rolle</Heading>
+          <Heading>{user.username}</Heading>
           <Spacer />
           <Flex h={'100%'} flexDir={'column'} justifyContent={'flex-start'}>
             <Button
@@ -75,6 +75,15 @@ const userProfile = () => {
     </Container>
   );
 };
+
+export async function getServerSideProps(ctx) {
+  const userId = ctx.query.userId;
+  const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+  const data = await res.json();
+  const { user } = data;
+
+  return { props: { user: user } };
+}
 
 export default userProfile;
 
