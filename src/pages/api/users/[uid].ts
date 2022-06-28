@@ -16,13 +16,25 @@ export default async function userHandler(
         if (user) {
           res.status(200).json({ success: true, user });
         } else {
-          res.status(204).json({ success: true });
+          res.status(404).json({ success: true, message: 'user not found' });
         }
       } catch (error) {
         res.status(400).json({ success: false });
       }
       break;
     case 'POST':
+      const { username, uid, photoURL, email } = req.body;
+      try {
+        const user = await User.create({
+          uid: uid,
+          username: username,
+          email: email,
+          photoURL: photoURL,
+        }).catch((err) => console.log(err.message));
+        res.status(201).json({ success: true, user });
+      } catch {
+        res.status(400).json({ success: false });
+      }
       break;
     default:
       break;

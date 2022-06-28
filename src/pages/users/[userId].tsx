@@ -1,5 +1,6 @@
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
+import { useAuthContext } from '@/contexts';
 import {
   Avatar,
   Box,
@@ -17,7 +18,9 @@ import {
 import React, { ReactElement } from 'react';
 import { BiEdit } from 'react-icons/bi';
 
-const userProfile = ({ user }) => {
+const userProfile = () => {
+  const { currentUser } = useAuthContext();
+
   return (
     <Container flexGrow={1}>
       <Flex
@@ -39,7 +42,7 @@ const userProfile = ({ user }) => {
               src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
             />
           </Box>
-          <Heading>{user.username}</Heading>
+          <Heading>{currentUser?.username}</Heading>
           <Spacer />
           <Flex h={'100%'} flexDir={'column'} justifyContent={'flex-start'}>
             <Button
@@ -75,15 +78,6 @@ const userProfile = ({ user }) => {
     </Container>
   );
 };
-
-export async function getServerSideProps(ctx) {
-  const userId = ctx.query.userId;
-  const res = await fetch(`http://localhost:3000/api/users/${userId}`);
-  const data = await res.json();
-  const { user } = data;
-
-  return { props: { user: user } };
-}
 
 export default userProfile;
 

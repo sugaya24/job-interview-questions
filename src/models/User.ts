@@ -4,6 +4,7 @@ export interface IUser extends Document {
   username: string;
   uid: string;
   email: string;
+  photoURL: string;
 }
 
 const userSchema: Schema = new mongoose.Schema(
@@ -17,6 +18,9 @@ const userSchema: Schema = new mongoose.Schema(
       required: [true, `Please add an username`],
     },
     email: {
+      type: String,
+    },
+    photoURL: {
       type: String,
     },
   },

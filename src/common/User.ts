@@ -1,5 +1,6 @@
 export type User = {
-  displayName: string | null | undefined;
+  uid: string | null | undefined;
+  username: string | null | undefined;
   email: string | null | undefined;
   photoURL: string | null | undefined;
 };
