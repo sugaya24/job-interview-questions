@@ -2,10 +2,19 @@ import { User } from '@/common/User';
 import { auth } from '@/firebase';
 import { isServer } from '@/utils';
 import { getRedirectResult, onAuthStateChanged } from 'firebase/auth';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 type AuthContextProps = {
   currentUser: User | null | undefined;
+  setCurrentUser: Dispatch<SetStateAction<User>>;
+  isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -14,6 +23,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null | undefined>(
     undefined,
   );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   if (isServer()) {
     return (
@@ -42,6 +52,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         const res = await fetch(`/api/users/${credentials.user.uid}`);
         const data = await res.json();
         setCurrentUser(data.user);
+        setIsLoading(false);
       }
     });
 
@@ -53,6 +64,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       const res = await fetch(`/api/users/${user.uid}`);
       const data = await res.json();
       setCurrentUser(data.user);
+      setIsLoading(false);
     });
     return () => {
       unsubscribe();
@@ -60,7 +72,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider value={{ currentUser, setCurrentUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -30,8 +30,24 @@ export default async function userHandler(
           username: username,
           email: email,
           photoURL: photoURL,
-        }).catch((err) => console.log(err.message));
+          github: '',
+          twitter: '',
+        });
         res.status(201).json({ success: true, user });
+      } catch {
+        res.status(400).json({ success: false });
+      }
+      break;
+    case 'PUT':
+      try {
+        const updatedUser = await User.findOneAndUpdate({
+          $set: {
+            username: req.body.username,
+            github: req.body.github,
+            twitter: req.body.twitter,
+          },
+        });
+        res.status(200).json({ success: true, user: updatedUser });
       } catch {
         res.status(400).json({ success: false });
       }

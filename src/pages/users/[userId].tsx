@@ -15,6 +15,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import React, { ReactElement } from 'react';
 import { BiEdit } from 'react-icons/bi';
 
@@ -37,22 +38,21 @@ const userProfile = () => {
       >
         <HStack>
           <Box>
-            <Avatar
-              size={'xl'}
-              src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
-            />
+            <Avatar size={'xl'} src={currentUser && currentUser.photoURL} />
           </Box>
           <Heading>{currentUser?.username}</Heading>
           <Spacer />
           <Flex h={'100%'} flexDir={'column'} justifyContent={'flex-start'}>
-            <Button
-              m={2}
-              rightIcon={<BiEdit />}
-              variant={'outline'}
-              boxShadow={'md'}
-            >
-              Edit
-            </Button>
+            <NextLink href={`/settings/profile`}>
+              <Button
+                m={2}
+                rightIcon={<BiEdit />}
+                variant={'outline'}
+                boxShadow={'md'}
+              >
+                Edit
+              </Button>
+            </NextLink>
           </Flex>
         </HStack>
         <Tabs my={8}>

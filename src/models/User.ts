@@ -1,11 +1,7 @@
+import { User } from '@/common';
 import mongoose, { Document, Model, Schema, models } from 'mongoose';
 
-export interface IUser extends Document {
-  username: string;
-  uid: string;
-  email: string;
-  photoURL: string;
-}
+export interface IUser extends User, Document {}
 
 const userSchema: Schema = new mongoose.Schema(
   {
@@ -21,6 +17,12 @@ const userSchema: Schema = new mongoose.Schema(
       type: String,
     },
     photoURL: {
+      type: String,
+    },
+    github: {
+      type: String,
+    },
+    twitter: {
       type: String,
     },
   },
