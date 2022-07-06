@@ -23,7 +23,7 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaGithub, FaTwitter } from 'react-icons/fa';
 
@@ -35,6 +35,7 @@ const editProfile = () => {
     formState: { errors, isSubmitting },
   } = useForm<User>({ mode: 'all' });
   const toast = useToast();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (isLoading) {
     return (
@@ -63,6 +64,29 @@ const editProfile = () => {
     const name = e.target.name;
     const value = e.target.value;
     setCurrentUser({ ...currentUser, [name]: value });
+  };
+
+  const uploadPicture = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target) return;
+    const file: File = e.target.files?.[0]!;
+    const filename = encodeURIComponent(currentUser.uid);
+    const extension = encodeURIComponent(file.name.split('.').pop());
+    const formData = new FormData();
+
+    const params = { filename, extension };
+    const query = new URLSearchParams(params);
+    const res = await fetch(`/api/s3/uploadFile?${query}`);
+    const { url, fields } = await res.json();
+
+    Object.entries({ ...fields, file }).forEach(([key, value]: any) =>
+      formData.append(key, value),
+    );
+
+    const upload = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+    console.log(upload.ok ? 'updated successfully' : 'upload failed');
   };
 
   async function onSubmit(values: User) {
@@ -115,7 +139,20 @@ const editProfile = () => {
           <Stack direction={'row'} gap={8}>
             <VStack>
               <Avatar size={'xl'} src={currentUser && currentUser.photoURL} />
-              <Button variant={'ghost'} size={'sm'}>
+              <Input
+                type={'file'}
+                ref={inputRef}
+                hidden
+                accept={'image/*'}
+                onChange={uploadPicture}
+              />
+              <Button
+                variant={'ghost'}
+                size={'sm'}
+                onClick={() => {
+                  inputRef.current?.click();
+                }}
+              >
                 Change picture
               </Button>
             </VStack>
