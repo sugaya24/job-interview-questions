@@ -19,7 +19,7 @@ export default async function userHandler(
           res.status(404).json({ success: true, message: 'user not found' });
         }
       } catch (error) {
-        res.status(400).json({ success: false });
+        res.status(400).json({ success: false, message: error.message });
       }
       break;
     case 'POST':
@@ -34,22 +34,24 @@ export default async function userHandler(
           twitter: '',
         });
         res.status(201).json({ success: true, user });
-      } catch {
-        res.status(400).json({ success: false });
+      } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
       }
       break;
     case 'PUT':
+      const filter = { uid: query.uid };
       try {
-        const updatedUser = await User.findOneAndUpdate({
+        const updatedUser = await User.findOneAndUpdate(filter, {
           $set: {
             username: req.body.username,
+            photoURL: req.body.photoURL,
             github: req.body.github,
             twitter: req.body.twitter,
           },
         });
         res.status(200).json({ success: true, user: updatedUser });
-      } catch {
-        res.status(400).json({ success: false });
+      } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
       }
       break;
     default:

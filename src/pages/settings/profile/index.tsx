@@ -72,21 +72,40 @@ const editProfile = () => {
     const filename = encodeURIComponent(currentUser.uid);
     const extension = encodeURIComponent(file.name.split('.').pop());
     const formData = new FormData();
-
     const params = { filename, extension };
     const query = new URLSearchParams(params);
     const res = await fetch(`/api/s3/uploadFile?${query}`);
     const { url, fields } = await res.json();
-
     Object.entries({ ...fields, file }).forEach(([key, value]: any) =>
       formData.append(key, value),
     );
-
     const upload = await fetch(url, {
       method: 'POST',
       body: formData,
     });
     console.log(upload.ok ? 'updated successfully' : 'upload failed');
+
+    if (!upload.ok) return;
+
+    // update user data on db for photoURL
+    const s3ObjectUrl = await fetch(
+      `/api/s3/getObjectUrl?key=${currentUser.uid}.${extension}`,
+    )
+      .then((res) => res.json())
+      .then((data) => data.s3ObjectUrl);
+    await fetch(`/api/users/${currentUser.uid}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...currentUser, photoURL: s3ObjectUrl }),
+    });
+
+    // set photoURL on currentUser
+    const resGetImage = await fetch(
+      `/api/s3/getObjectUrl?key=${currentUser.uid}.${extension}`,
+    );
+    const dataGetImage = await resGetImage.json();
+    setCurrentUser({ ...currentUser, photoURL: '' });
+    setCurrentUser({ ...currentUser, photoURL: dataGetImage.s3ObjectUrl });
   };
 
   async function onSubmit(values: User) {
