@@ -7,7 +7,7 @@ export default async function authHandler(
   res: NextApiResponse,
 ) {
   await dbConnect();
-  const { method, query } = req;
+  const { method } = req;
 
   switch (method) {
     case 'GET':
@@ -19,6 +19,20 @@ export default async function authHandler(
       res.status(200).json({ success: true, data: users });
       break;
     case 'POST':
+      const { username, uid, photoURL, email } = req.body;
+      try {
+        const user = await User.create({
+          uid: uid,
+          username: username,
+          email: email,
+          photoURL: photoURL,
+          github: '',
+          twitter: '',
+        });
+        res.status(201).json({ success: true, user });
+      } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+      }
       break;
     default:
       break;

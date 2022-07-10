@@ -22,22 +22,6 @@ export default async function userHandler(
         res.status(400).json({ success: false, message: error.message });
       }
       break;
-    case 'POST':
-      const { username, uid, photoURL, email } = req.body;
-      try {
-        const user = await User.create({
-          uid: uid,
-          username: username,
-          email: email,
-          photoURL: photoURL,
-          github: '',
-          twitter: '',
-        });
-        res.status(201).json({ success: true, user });
-      } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
-      }
-      break;
     case 'PUT':
       const filter = { uid: query.uid };
       try {

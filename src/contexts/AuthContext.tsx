@@ -37,7 +37,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       const res = await fetch(`/api/users/${credentials.user.uid}`);
       const data = await res.json();
       if (!data.user) {
-        await fetch(`/api/users/${credentials.user.uid}`, {
+        await fetch(`/api/users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
