@@ -5,6 +5,7 @@ import { QuestionsCard } from '@/components/QuestionsList';
 import { TrendingQuestions } from '@/components/TrendingQuestions';
 import { SearchTags } from '@/components/searchtagas';
 import { useAuthContext } from '@/contexts';
+import { useQuestions } from '@/hooks';
 import {
   Box,
   Center,
@@ -15,14 +16,11 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import React, { ReactElement, useEffect, useState } from 'react';
-import useSWR from 'swr';
-
-const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json());
 
 export default function questionsPage() {
   const { isLoading } = useAuthContext();
+  const { data, error } = useQuestions();
   const [questionList, setQuestionList] = useState(null);
-  const { data, error } = useSWR(`/api/questions`, fetcher);
 
   if (error) return 'An error has occurred.';
 

@@ -3,7 +3,7 @@ import Question from '@/models/Question';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  dbConnect();
+  await dbConnect();
   const { method } = req;
 
   switch (method) {
@@ -20,6 +20,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       }
       break;
     case 'POST':
+      try {
+        await Question.create(req.body);
+        res.status(201).json({ success: true });
+      } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+      }
       break;
     default:
       break;
