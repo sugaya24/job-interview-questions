@@ -4,18 +4,20 @@ import Layout from '@/components/Layout';
 import { Editor } from '@/components/createnewpost';
 import { useAuthContext } from '@/contexts';
 import { useQuestions } from '@/hooks';
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Input } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 // import parse from 'html-react-parser';
 import type { EditorState, LexicalEditor } from 'lexical';
 import { nanoid } from 'nanoid';
+import router from 'next/router';
 import React, { ReactElement, useState } from 'react';
 
 const createNewPost = () => {
-  const [htmlString, setHtmlString] = useState<string>('');
-  const [isPosting, setIsPosting] = useState(false);
   const { currentUser } = useAuthContext();
   const { mutate } = useQuestions();
+  const [htmlString, setHtmlString] = useState<string>('');
+  const [isPosting, setIsPosting] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
 
   function onChange(_editorState: EditorState, editor: LexicalEditor) {
     editor.update(() => {
@@ -29,7 +31,7 @@ const createNewPost = () => {
     const newPost: Question = {
       questionId: nanoid(10),
       content: htmlString,
-      title: `title posted by ${currentUser?.username}`,
+      title: title,
       tags: ['tag1', 'tag2'],
       likes: [],
       author: {
@@ -45,6 +47,7 @@ const createNewPost = () => {
     });
     mutate();
     setIsPosting(false);
+    router.push('/questions');
   }
 
   return (
@@ -56,6 +59,18 @@ const createNewPost = () => {
         display={'flex'}
         flexDir={'column'}
       >
+        <Input
+          w={'100%'}
+          mb={4}
+          value={title}
+          outline={'none'}
+          size={'lg'}
+          fontSize={'lg'}
+          focusBorderColor={'none'}
+          bgColor={'white'}
+          placeholder={'Title'}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         <Editor onChange={onChange} />
         <HStack mt={4}>
           <Button

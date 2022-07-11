@@ -36,12 +36,19 @@ export default function questionsPage() {
         setQuestionList(<Center>no data</Center>);
       } else {
         setQuestionList(
-          data.questions.map((question: Question) => (
-            <Box key={question.questionId}>
-              <QuestionsCard w={'100%'} question={question} />
-              <Divider />
-            </Box>
-          )),
+          data.questions.map(
+            (
+              question: Question & {
+                createdAt: Date;
+                updatedAt: Date;
+              },
+            ) => (
+              <Box key={question.questionId}>
+                <QuestionsCard w={'100%'} question={question} />
+                <Divider />
+              </Box>
+            ),
+          ),
         );
       }
     }
