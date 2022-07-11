@@ -3,7 +3,7 @@ import mongoose, { Document, Model, Schema, models } from 'mongoose';
 
 export interface IQuestion extends Question, Document {}
 
-const questionSchema: Schema = new mongoose.Schema(
+const questionSchema: Schema = new mongoose.Schema<IQuestion>(
   {
     questionId: {
       type: String,

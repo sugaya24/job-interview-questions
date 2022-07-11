@@ -16,6 +16,7 @@ import {
   isStyleProp,
 } from '@chakra-ui/react';
 import { objectFilter } from '@chakra-ui/utils';
+import { format } from 'date-fns';
 import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
@@ -23,7 +24,7 @@ import { BsBookmark, BsFillBookmarkCheckFill } from 'react-icons/bs';
 
 interface Props {
   w: string;
-  question: Question;
+  question: Question & { createdAt: Date; updatedAt: Date };
 }
 
 const QuestionsCard = (props: Props) => {
@@ -63,7 +64,7 @@ const QuestionsCard = (props: Props) => {
       <Avatar src={question.author.avatar} />
       <Stack w={'100%'} direction={'column'} spacing={2} fontSize={'sm'}>
         <HStack className={'top-part'}>
-          <NextLink href={'/users/--username--'}>
+          <NextLink href={`/users/${question.author.uid}`} passHref>
             <Link
               _hover={{
                 textDecor: 'none',
@@ -74,10 +75,12 @@ const QuestionsCard = (props: Props) => {
             </Link>
           </NextLink>
           <Spacer />
-          <Text color={'gray.500'}>Feb 08, 2021 · 6min read</Text>
+          <Text color={'gray.500'}>
+            {format(new Date(question.createdAt), 'MMM dd, yyyy')}
+          </Text>
         </HStack>
         <Box className={'main-text'}>
-          <NextLink href={`/questions/${question.questionId}`}>
+          <NextLink href={`/questions/${question.questionId}`} passHref>
             <Link>
               <Heading as={'h2'} fontSize={'xl'}>
                 {question.title}

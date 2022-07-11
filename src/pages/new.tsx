@@ -8,6 +8,7 @@ import { Box, Button, HStack } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 // import parse from 'html-react-parser';
 import type { EditorState, LexicalEditor } from 'lexical';
+import { nanoid } from 'nanoid';
 import React, { ReactElement, useState } from 'react';
 
 const createNewPost = () => {
@@ -26,7 +27,7 @@ const createNewPost = () => {
   async function postContent() {
     setIsPosting(true);
     const newPost: Question = {
-      questionId: 'questionid',
+      questionId: nanoid(10),
       content: htmlString,
       title: `title posted by ${currentUser?.username}`,
       tags: ['tag1', 'tag2'],
