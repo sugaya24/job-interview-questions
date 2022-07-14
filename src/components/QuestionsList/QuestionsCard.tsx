@@ -42,13 +42,31 @@ const QuestionsCard = (props: Props) => {
     setIsLiked(likes.includes(currentUser.uid));
   }, [currentUser]);
 
-  const handleLike = () => {
+  const handleLike = async () => {
+    setIsLiked(!isLiked);
     if (likes.includes(currentUser.uid)) {
       setLikes(likes.filter((uid) => uid !== currentUser.uid));
+      await fetch(`/api/questions/${question.questionId}/unlike`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: currentUser.uid,
+        }),
+      });
     } else {
       setLikes([...likes, currentUser.uid]);
+      await fetch(`/api/questions/${question.questionId}/like`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: currentUser.uid,
+        }),
+      });
     }
-    setIsLiked(!isLiked);
   };
 
   return (
@@ -109,15 +127,15 @@ const QuestionsCard = (props: Props) => {
           <Spacer />
           <HStack>
             <ButtonGroup spacing={0}>
-              <IconButton
-                size={'sm'}
-                variant={'none'}
-                aria-label={isLiked ? 'Fill Like' : 'Outline Like'}
-                icon={isLiked ? <AiFillLike /> : <AiOutlineLike />}
-                onClick={handleLike}
-              />
-              <HStack>
-                <Text>{likes.length}</Text>
+              <HStack spacing={0}>
+                <IconButton
+                  size={'sm'}
+                  variant={'none'}
+                  aria-label={isLiked ? 'Fill Like' : 'Outline Like'}
+                  icon={isLiked ? <AiFillLike /> : <AiOutlineLike />}
+                  onClick={handleLike}
+                />
+                {likes.length && <Text>{likes.length}</Text>}
               </HStack>
             </ButtonGroup>
             <Spacer />
