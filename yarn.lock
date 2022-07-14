@@ -2955,6 +2955,80 @@
     "@typescript-eslint/types" "5.26.0"
     eslint-visitor-keys "^3.3.0"
 
+"@zag-js/auto-resize@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@zag-js/auto-resize/-/auto-resize-0.1.0.tgz#51de6b19cec28ba33f03de673a7641669f712e0d"
+  integrity sha512-aBKznA9CgfK+TierW890GMBLtk8kBTwswMPHWq3KclcbyqJRgjPNE7aTsry+0ca9oMqa2OMbGNokbJm7Ffqg8A==
+
+"@zag-js/core@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@zag-js/core/-/core-0.1.8.tgz#7498fa12ff18daa573bd95ed4f9537c8193982dc"
+  integrity sha512-GBey9y5CmGmNNawcSMHn7AjKPAue+NOkkELybl2f9RqrL9cWwyVs1O6ZF8S3PpP/7UF2BP9hihEG9iin2N5UUQ==
+  dependencies:
+    "@zag-js/store" "0.1.0"
+    "@zag-js/utils" "0.1.2"
+    klona "2.0.5"
+
+"@zag-js/dom-utils@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@zag-js/dom-utils/-/dom-utils-0.1.7.tgz#ee3f8b8e3e49393a423ae8ae4bf01a3f494f073f"
+  integrity sha512-E/s5tqbzuRkoFIMqD+A/S16OOUfIkPGuC0Mfrx9pYfBsEQMYJ+Xna98+e5QQtk/DXdLHMoETDsdoaqvWBSzZcQ==
+  dependencies:
+    "@zag-js/types" "0.2.2"
+    "@zag-js/utils" "0.1.2"
+
+"@zag-js/interact-outside@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@zag-js/interact-outside/-/interact-outside-0.1.2.tgz#9f6831dd7b151a51fca5a8a802dfdd05cc0ef987"
+  integrity sha512-7O8/Bo89286UgSobQh/02AVIm0O2NY+G6xuSiXUrCOyyEIeApwgL6BOO1zz46x6YKu0w83FC91WVkglya2MzLg==
+  dependencies:
+    "@zag-js/dom-utils" "0.1.7"
+
+"@zag-js/live-region@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@zag-js/live-region/-/live-region-0.1.0.tgz#c87148f496ec6e2012ae87698e8db4387dd732ff"
+  integrity sha512-O3QjZMhCdDjvIS5zkcC6JLTalTfUdhYYEM7LujF7oAFS6ykViGDaF9X6uGYL9MWouRHoxoWhyknbwojNQmx0iw==
+
+"@zag-js/react@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@zag-js/react/-/react-0.1.12.tgz#9fcbae1216eee19a94b8d8f5980ade97ed13cb23"
+  integrity sha512-oBrelTmF/GyBFIwg4ebJVVmwU3u2+p8rDEjhKCjIdvDtJG1FSrhwnYsdjdyKK3foOmGG9vuIUgIuFdC4bhNRcg==
+  dependencies:
+    "@zag-js/core" "0.1.8"
+    "@zag-js/store" "0.1.0"
+    proxy-compare "2.2.0"
+    use-sync-external-store "1.2.0"
+
+"@zag-js/store@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@zag-js/store/-/store-0.1.0.tgz#db510404907b48463ce51625c013d75f43e86dd3"
+  integrity sha512-QA5oUhM8Wlom/f7ZbSnzquBDvmUmGueVk0dTQ1CF4BF3IJvQkDt4CSaEiqR3dY/YIRpLIJf/mmAT37AeQ4QBUA==
+  dependencies:
+    proxy-compare "2.2.0"
+
+"@zag-js/tags-input@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@zag-js/tags-input/-/tags-input-0.2.2.tgz#04caf8f3104915419d6ef1d4f16965c587370d23"
+  integrity sha512-1zFJS9ZmKvRMJy4dIHRGsnCq7Ab8KF3I8IWbivuPcmqCKi8NP6ih1bOLdJHYwMQfzE8R99+QRhiqH2CikvXJoQ==
+  dependencies:
+    "@zag-js/auto-resize" "0.1.0"
+    "@zag-js/core" "0.1.8"
+    "@zag-js/interact-outside" "0.1.2"
+    "@zag-js/live-region" "0.1.0"
+    "@zag-js/types" "0.2.2"
+
+"@zag-js/types@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@zag-js/types/-/types-0.2.2.tgz#4186a834b67860c87fbd46c0b88913f09b095d04"
+  integrity sha512-vqeidjUcmER5qL2R4Kw1NMofOMPJGudTbyX2h8dzbw+0vaYbyN7GRpWJyTb5lwLMbLreHAYx3b2HLbG6e+VX/w==
+  dependencies:
+    csstype "3.1.0"
+
+"@zag-js/utils@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@zag-js/utils/-/utils-0.1.2.tgz#cc785c97fb7a96386e6b1c214693b89af3ff6cca"
+  integrity sha512-YLKgHY445GcyPfFlh5Gh5V1lBxJCsQVbBxJeHne67h4IMdFny70FPj3acqmOPi1mZh7bv0j4cfVjVRMNb7nq2Q==
+
 JSONStream@^1.0.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
@@ -3474,7 +3548,7 @@ csstype@3.0.9:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.9.tgz#6410af31b26bd0520933d02cbc64fce9ce3fbf0b"
   integrity sha512-rpw6JPxK6Rfg1zLOYCSwle2GFOOsnjmDYDaBwEcwoOg4qlsIVCN789VkBZDJAGi4T07gI4YSutR43t9Zz4Lzuw==
 
-csstype@^3.0.2:
+csstype@3.1.0, csstype@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
@@ -4825,6 +4899,11 @@ kind-of@^6.0.3:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
+klona@2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
+  integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
+
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.4.1.tgz#ae4562c007473b932a6200d403268dd2fffc6ade"
@@ -5518,6 +5597,11 @@ protobufjs@^6.11.3:
     "@types/long" "^4.0.1"
     "@types/node" ">=13.7.0"
     long "^4.0.0"
+
+proxy-compare@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/proxy-compare/-/proxy-compare-2.2.0.tgz#2357330407241b091501644d08a446a4a28e0e15"
+  integrity sha512-hEtMJevUmOByZCTw1NRUVaWWHCGJLO0ogizpey8yX6zMPolDe8YVa+PHgMOTiZuyUkFj+hMKs/1UaM0+ZkuvgA==
 
 punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
@@ -6390,6 +6474,11 @@ use-sidecar@^1.0.1, use-sidecar@^1.0.5:
   dependencies:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
+
+use-sync-external-store@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
+  integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"

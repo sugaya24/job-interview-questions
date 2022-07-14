@@ -1,4 +1,5 @@
 import { Question } from '@/common';
+import { ChakraTagInput } from '@/components/ChakraTagInput';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { Editor } from '@/components/createnewpost';
@@ -18,6 +19,7 @@ const createNewPost = () => {
   const [htmlString, setHtmlString] = useState<string>('');
   const [isPosting, setIsPosting] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
+  const [tags, setTags] = useState<string[]>([]);
 
   function onChange(_editorState: EditorState, editor: LexicalEditor) {
     editor.update(() => {
@@ -32,7 +34,7 @@ const createNewPost = () => {
       questionId: nanoid(10),
       content: htmlString,
       title: title,
-      tags: ['tag1', 'tag2'],
+      tags: tags,
       likes: [],
       author: {
         uid: currentUser.uid,
@@ -71,6 +73,7 @@ const createNewPost = () => {
           placeholder={'Title'}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <ChakraTagInput tags={tags} setTags={setTags} />
         <Editor onChange={onChange} />
         <HStack mt={4}>
           <Button
