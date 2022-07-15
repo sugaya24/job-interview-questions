@@ -47,7 +47,6 @@ const createNewPost = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newPost),
     });
-    mutate();
     setIsPosting(false);
     router.push('/questions');
   }

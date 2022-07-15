@@ -52,7 +52,7 @@ export default function questionsPage() {
         );
       }
     }
-  }, [isLoading]);
+  }, [isLoading, data]);
 
   return (
     <Container flexGrow={1}>
