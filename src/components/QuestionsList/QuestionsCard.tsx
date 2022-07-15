@@ -38,8 +38,11 @@ const QuestionsCard = (props: Props) => {
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    if (!currentUser) return;
-    setIsLiked(likes.includes(currentUser.uid));
+    if (!currentUser) {
+      setIsLiked(false);
+    } else {
+      setIsLiked(likes.includes(currentUser.uid));
+    }
   }, [currentUser]);
 
   const handleLike = async () => {
@@ -67,6 +70,10 @@ const QuestionsCard = (props: Props) => {
         }),
       });
     }
+  };
+
+  const handleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
   };
 
   return (
@@ -129,22 +136,26 @@ const QuestionsCard = (props: Props) => {
             <ButtonGroup spacing={0}>
               <HStack spacing={0}>
                 <IconButton
+                  disabled={!currentUser}
                   size={'sm'}
                   variant={'none'}
                   aria-label={isLiked ? 'Fill Like' : 'Outline Like'}
                   icon={isLiked ? <AiFillLike /> : <AiOutlineLike />}
                   onClick={handleLike}
                 />
-                {likes.length && <Text>{likes.length}</Text>}
+                {likes.length && (
+                  <Text color={!currentUser && 'gray.400'}>{likes.length}</Text>
+                )}
               </HStack>
             </ButtonGroup>
             <Spacer />
             <IconButton
+              disabled={!currentUser}
               size={'sm'}
               variant={'none'}
               aria-label={isBookmarked ? 'Fill Bookmark' : 'Bookmark Outline'}
               icon={isBookmarked ? <BsFillBookmarkCheckFill /> : <BsBookmark />}
-              onClick={() => setIsBookmarked(!isBookmarked)}
+              onClick={handleBookmark}
             />
           </HStack>
         </HStack>

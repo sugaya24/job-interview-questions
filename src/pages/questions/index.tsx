@@ -25,7 +25,7 @@ export default function questionsPage() {
   if (error) return 'An error has occurred.';
 
   useEffect(() => {
-    if (isLoading || !data) {
+    if (!data) {
       setQuestionList(
         <Center py={4}>
           <Spinner />
