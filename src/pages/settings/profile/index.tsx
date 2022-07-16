@@ -1,6 +1,7 @@
 import { User } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuthContext } from '@/contexts';
 import {
   Avatar,
@@ -282,5 +283,9 @@ const editProfile = () => {
 export default editProfile;
 
 editProfile.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return (
+    <ProtectedRoute>
+      <Layout>{page}</Layout>
+    </ProtectedRoute>
+  );
 };

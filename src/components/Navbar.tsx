@@ -105,7 +105,7 @@ export default function Navbar() {
                   </Button>
                 )}
                 <MenuList>
-                  <NextLink href={`/users/testuid`}>
+                  <NextLink href={`/users/${currentUser?.uid}`}>
                     <MenuItem>Account</MenuItem>
                   </NextLink>
                   <MenuDivider />
