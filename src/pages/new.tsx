@@ -15,7 +15,6 @@ import React, { ReactElement, useState } from 'react';
 
 const createNewPost = () => {
   const { currentUser } = useAuthContext();
-  const { mutate } = useQuestions();
   const [htmlString, setHtmlString] = useState<string>('');
   const [isPosting, setIsPosting] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');

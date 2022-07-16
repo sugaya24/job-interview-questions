@@ -27,7 +27,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
   const api = tagsInput.connect(state, send, normalizeProps);
 
   useEffect(() => {
-    setTags(api.value);
+    setTags([...api.value]);
   }, [api.value]);
 
   return (
