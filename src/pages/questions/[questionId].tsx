@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
+import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
@@ -39,71 +40,77 @@ const questionDetail = () => {
     );
 
   return (
-    <Container flex={'1 0 auto'}>
-      <Flex
-        w={'container.lg'}
-        my={8}
-        py={8}
-        px={12}
-        flexDir={'column'}
-        rounded={'2xl'}
-        bgColor={'white'}
-        border={'1px'}
-        borderColor={'blackAlpha.400'}
-      >
-        <HStack>
-          <NextLink href={`/users/${data?.question?.author.uid}`}>
-            <Link
-              _hover={{
-                textDecor: 'none',
-                color: 'blackAlpha.600',
-              }}
-            >
-              <HStack>
-                <Box>
-                  <Avatar src={data?.question?.author.avatar} />
-                </Box>
-                <Text fontWeight={600} fontSize={'xl'}>
-                  {data?.question?.author.name}
-                </Text>
-              </HStack>
-            </Link>
-          </NextLink>
-          <Spacer />
-          <Text color={'gray.500'}>
-            posted at{' '}
-            {format(new Date(data?.question?.createdAt), 'MMM dd, yyyy')}
-          </Text>
-        </HStack>
-        <Heading mt={4} size={'2xl'} fontWeight={'extrabold'}>
-          {data?.question?.title}
-        </Heading>
-        <HStack mt={4}>
-          {data?.question?.tags.map((tag, index) => (
-            <NextLink key={index} href={`/tags/${tag}`} passHref>
+    <>
+      <NextSeo
+        title={data.question.title}
+        titleTemplate={'%s | Question Box'}
+      />
+      <Container flex={'1 0 auto'}>
+        <Flex
+          w={'container.lg'}
+          my={8}
+          py={8}
+          px={12}
+          flexDir={'column'}
+          rounded={'2xl'}
+          bgColor={'white'}
+          border={'1px'}
+          borderColor={'blackAlpha.400'}
+        >
+          <HStack>
+            <NextLink href={`/users/${data?.question?.author.uid}`}>
               <Link
                 _hover={{
                   textDecor: 'none',
+                  color: 'blackAlpha.600',
                 }}
               >
-                <Tag
-                  _hover={{
-                    color: 'blackAlpha.600',
-                  }}
-                >
-                  {tag}
-                </Tag>
+                <HStack>
+                  <Box>
+                    <Avatar src={data?.question?.author.avatar} />
+                  </Box>
+                  <Text fontWeight={600} fontSize={'xl'}>
+                    {data?.question?.author.name}
+                  </Text>
+                </HStack>
               </Link>
             </NextLink>
-          ))}
-        </HStack>
-        <Divider mt={4} />
-        <Box p={4}>
-          {/* <Text>content text</Text> */}
-          {parse(data?.question?.content)}
-        </Box>
-      </Flex>
-    </Container>
+            <Spacer />
+            <Text color={'gray.500'}>
+              posted at{' '}
+              {format(new Date(data?.question?.createdAt), 'MMM dd, yyyy')}
+            </Text>
+          </HStack>
+          <Heading mt={4} size={'2xl'} fontWeight={'extrabold'}>
+            {data?.question?.title}
+          </Heading>
+          <HStack mt={4}>
+            {data?.question?.tags.map((tag, index) => (
+              <NextLink key={index} href={`/tags/${tag}`} passHref>
+                <Link
+                  _hover={{
+                    textDecor: 'none',
+                  }}
+                >
+                  <Tag
+                    _hover={{
+                      color: 'blackAlpha.600',
+                    }}
+                  >
+                    {tag}
+                  </Tag>
+                </Link>
+              </NextLink>
+            ))}
+          </HStack>
+          <Divider mt={4} />
+          <Box p={4}>
+            {/* <Text>content text</Text> */}
+            {parse(data?.question?.content)}
+          </Box>
+        </Flex>
+      </Container>
+    </>
   );
 };
 

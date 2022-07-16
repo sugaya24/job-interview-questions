@@ -16,6 +16,7 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react';
+import { NextSeo } from 'next-seo';
 import React, { ReactElement, useEffect, useState } from 'react';
 
 export default function questionsPage() {
@@ -57,31 +58,34 @@ export default function questionsPage() {
   }, [data]);
 
   return (
-    <Container flexGrow={1}>
-      <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={2}>
-          <SearchTags />
-        </GridItem>
-        <GridItem colSpan={7}>
-          <Heading>Questions</Heading>
-          {questionList}
-        </GridItem>
-        <GridItem colSpan={3}>
-          <TrendingQuestions />
-        </GridItem>
-      </Grid>
-      <Pagination
-        hasNextPage={data?.hasNextPage}
-        hasPrevPage={data?.hasPrevPage}
-        page={data?.page}
-        totalPages={data?.totalPages}
-        pagingCounter={data?.pagingCounter}
-        setPageIndex={setPageIndex}
-        // totalDocs={data?.totalDocs}
-        // limit={data?.limit}
-        // prevPage={data?.prevPage}
-      />
-    </Container>
+    <>
+      <NextSeo title={'Question Box'} titleTemplate={'Questions List | %s'} />
+      <Container flexGrow={1}>
+        <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
+          <GridItem colSpan={2}>
+            <SearchTags />
+          </GridItem>
+          <GridItem colSpan={7}>
+            <Heading>Questions</Heading>
+            {questionList}
+          </GridItem>
+          <GridItem colSpan={3}>
+            <TrendingQuestions />
+          </GridItem>
+        </Grid>
+        <Pagination
+          hasNextPage={data?.hasNextPage}
+          hasPrevPage={data?.hasPrevPage}
+          page={data?.page}
+          totalPages={data?.totalPages}
+          pagingCounter={data?.pagingCounter}
+          setPageIndex={setPageIndex}
+          // totalDocs={data?.totalDocs}
+          // limit={data?.limit}
+          // prevPage={data?.prevPage}
+        />
+      </Container>
+    </>
   );
 }
 

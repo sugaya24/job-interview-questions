@@ -10,6 +10,7 @@ import { $generateHtmlFromNodes } from '@lexical/html';
 // import parse from 'html-react-parser';
 import type { EditorState, LexicalEditor } from 'lexical';
 import { nanoid } from 'nanoid';
+import { NextSeo } from 'next-seo';
 import router from 'next/router';
 import React, { ReactElement, useState } from 'react';
 
@@ -51,43 +52,46 @@ const createNewPost = () => {
   }
 
   return (
-    <Container py={4} flexGrow={1}>
-      <Box
-        w={'container.lg'}
-        h={'100%'}
-        flexGrow={1}
-        display={'flex'}
-        flexDir={'column'}
-      >
-        <Input
-          w={'100%'}
-          mb={4}
-          value={title}
-          outline={'none'}
-          size={'lg'}
-          fontSize={'lg'}
-          focusBorderColor={'none'}
-          bgColor={'white'}
-          placeholder={'Title'}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <ChakraTagInput tags={tags} setTags={setTags} />
-        <Editor onChange={onChange} />
-        <HStack mt={4}>
-          <Button
-            isDisabled={!currentUser || isPosting}
-            isLoading={isPosting}
-            colorScheme={'blue'}
-            onClick={postContent}
-          >
-            Post
-          </Button>
-          {/* <Button variant={'outline'} colorScheme={'yellow'}>
+    <>
+      <NextSeo title={'Question Box'} titleTemplate={'Create New Post | %s'} />
+      <Container py={4} flexGrow={1}>
+        <Box
+          w={'container.lg'}
+          h={'100%'}
+          flexGrow={1}
+          display={'flex'}
+          flexDir={'column'}
+        >
+          <Input
+            w={'100%'}
+            mb={4}
+            value={title}
+            outline={'none'}
+            size={'lg'}
+            fontSize={'lg'}
+            focusBorderColor={'none'}
+            bgColor={'white'}
+            placeholder={'Title'}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <ChakraTagInput tags={tags} setTags={setTags} />
+          <Editor onChange={onChange} />
+          <HStack mt={4}>
+            <Button
+              isDisabled={!currentUser || isPosting}
+              isLoading={isPosting}
+              colorScheme={'blue'}
+              onClick={postContent}
+            >
+              Post
+            </Button>
+            {/* <Button variant={'outline'} colorScheme={'yellow'}>
             Save Draft
           </Button> */}
-        </HStack>
-      </Box>
-    </Container>
+          </HStack>
+        </Box>
+      </Container>
+    </>
   );
 };
 
