@@ -22,7 +22,7 @@ export default function questionsPage() {
   const { data, error } = useQuestions();
   const [questionList, setQuestionList] = useState(null);
 
-  if (error) return 'An error has occurred.';
+  if (error) return `An error has occurred. => ${error.message}`;
 
   useEffect(() => {
     if (!data) {
@@ -52,7 +52,7 @@ export default function questionsPage() {
         );
       }
     }
-  }, [isLoading, data]);
+  }, [data]);
 
   return (
     <Container flexGrow={1}>

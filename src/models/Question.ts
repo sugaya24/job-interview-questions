@@ -1,9 +1,11 @@
 import { Question } from '@/common';
-import mongoose, { Document, Model, Schema, models } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
+import type { Model, PaginateModel } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-export interface IQuestion extends Question, Document {}
+export interface QuestionDocument extends Question, Document {}
 
-const questionSchema: Schema = new mongoose.Schema<IQuestion>(
+const questionSchema: Schema = new mongoose.Schema<QuestionDocument>(
   {
     questionId: {
       type: String,
@@ -37,7 +39,15 @@ const questionSchema: Schema = new mongoose.Schema<IQuestion>(
   { timestamps: true },
 );
 
-export type QuestionModel = Model<IQuestion>;
-export default models.Question
-  ? (models.Question as QuestionModel)
-  : mongoose.model<IQuestion>(`Question`, questionSchema);
+questionSchema.plugin(mongoosePaginate);
+
+export interface QuestionDocument extends mongoose.Document, Question {}
+interface QuestionModel extends Model<QuestionDocument> {}
+
+export default mongoose.models.Question
+  ? (mongoose.models.Question as QuestionModel)
+  : mongoose.model<QuestionDocument, PaginateModel<QuestionDocument>>(
+      `Question`,
+      questionSchema,
+      `questions`,
+    );
