@@ -1,0 +1,1 @@
+export const LIMIT_DISPLAY_CONTENT_PER_PAGE = 5;

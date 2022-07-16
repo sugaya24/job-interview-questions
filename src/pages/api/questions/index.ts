@@ -1,6 +1,12 @@
+import { LIMIT_DISPLAY_CONTENT_PER_PAGE } from '@/constant';
 import dbConnect from '@/lib/dbConnect';
 import Question, { QuestionDocument } from '@/models/Question';
-import type { ObjectId } from 'mongoose';
+import type {
+  FilterQuery,
+  ObjectId,
+  PaginateOptions,
+  PaginateResult,
+} from 'mongoose';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -10,8 +16,24 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   switch (method) {
     case 'GET':
       try {
-        const result = await Question.find({});
-        const questions = result.map(
+        const pageIndex = req.query.page;
+        if (typeof pageIndex !== 'string' || Array.isArray(pageIndex)) {
+          res.status(400).end();
+          return;
+        }
+        const query: FilterQuery<QuestionDocument> = {};
+        const options: PaginateOptions = {
+          pagination: true,
+          limit: LIMIT_DISPLAY_CONTENT_PER_PAGE,
+          page: +pageIndex,
+          sort: { createdAt: -1 },
+        };
+        const result: PaginateResult<
+          QuestionDocument & {
+            _id: ObjectId;
+          }
+        > = await Question.paginate(query, options);
+        const questions = result.docs.map(
           (
             doc: QuestionDocument & {
               _id: ObjectId;
@@ -21,7 +43,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             return JSON.parse(JSON.stringify(question));
           },
         );
-        res.status(200).json({ success: true, questions });
+        res.status(200).json({
+          success: true,
+          questions,
+          totalPages: result.totalPages,
+          hasPrevPage: result.hasPrevPage,
+          hasNextPage: result.hasNextPage,
+          pagingCounter: result.pagingCounter,
+          page: result.page,
+        });
       } catch (error) {
         res.status(400).json({ success: false, message: error.message });
       }

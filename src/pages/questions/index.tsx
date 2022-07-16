@@ -1,10 +1,11 @@
 import { Question } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
+import { Pagination } from '@/components/Pagination';
 import { QuestionsCard } from '@/components/QuestionsList';
 import { TrendingQuestions } from '@/components/TrendingQuestions';
 import { SearchTags } from '@/components/searchtagas';
-import { useAuthContext } from '@/contexts';
+import { LIMIT_DISPLAY_CONTENT_PER_PAGE } from '@/constant';
 import { useQuestions } from '@/hooks';
 import {
   Box,
@@ -18,9 +19,9 @@ import {
 import React, { ReactElement, useEffect, useState } from 'react';
 
 export default function questionsPage() {
-  const { isLoading } = useAuthContext();
-  const { data, error } = useQuestions();
-  const [questionList, setQuestionList] = useState(null);
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [questionList, setQuestionList] = useState<any>(null);
+  const { data, error } = useQuestions(pageIndex.toString());
 
   if (error) return `An error has occurred. => ${error.message}`;
 
@@ -42,10 +43,11 @@ export default function questionsPage() {
                 createdAt: Date;
                 updatedAt: Date;
               },
+              index: number,
             ) => (
               <Box key={question.questionId}>
                 <QuestionsCard w={'100%'} question={question} />
-                <Divider />
+                {index !== LIMIT_DISPLAY_CONTENT_PER_PAGE - 1 && <Divider />}
               </Box>
             ),
           ),
@@ -68,6 +70,17 @@ export default function questionsPage() {
           <TrendingQuestions />
         </GridItem>
       </Grid>
+      <Pagination
+        hasNextPage={data?.hasNextPage}
+        hasPrevPage={data?.hasPrevPage}
+        page={data?.page}
+        totalPages={data?.totalPages}
+        pagingCounter={data?.pagingCounter}
+        setPageIndex={setPageIndex}
+        // totalDocs={data?.totalDocs}
+        // limit={data?.limit}
+        // prevPage={data?.prevPage}
+      />
     </Container>
   );
 }
