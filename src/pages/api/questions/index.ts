@@ -43,15 +43,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             return JSON.parse(JSON.stringify(question));
           },
         );
-        res.status(200).json({
-          success: true,
-          questions,
-          totalPages: result.totalPages,
-          hasPrevPage: result.hasPrevPage,
-          hasNextPage: result.hasNextPage,
-          pagingCounter: result.pagingCounter,
-          page: result.page,
-        });
+        res.status(200).json(questions);
       } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
