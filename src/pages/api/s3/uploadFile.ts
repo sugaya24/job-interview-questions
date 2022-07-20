@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       ? `${filename[0]}.${extension}`
       : `${filename}.${extension}`;
     const post = await createPresignedPost(s3Client, {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: process.env.BUCKET_NAME || '',
       Key: key,
       Expires: 600,
     });

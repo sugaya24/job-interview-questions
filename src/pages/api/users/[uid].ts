@@ -18,7 +18,7 @@ export default async function userHandler(
         } else {
           res.status(404).json({ success: true, message: 'user not found' });
         }
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;
@@ -34,7 +34,7 @@ export default async function userHandler(
           },
         });
         res.status(200).json({ success: true, user: updatedUser });
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;

@@ -41,32 +41,32 @@ const QuestionsCard = (props: Props) => {
     if (!currentUser) {
       setIsLiked(false);
     } else {
-      setIsLiked(likes.includes(currentUser.uid));
+      setIsLiked(likes.includes(currentUser?.uid!));
     }
   }, [currentUser]);
 
   const handleLike = async () => {
     setIsLiked(!isLiked);
-    if (likes.includes(currentUser.uid)) {
-      setLikes(likes.filter((uid) => uid !== currentUser.uid));
+    if (likes.includes(currentUser?.uid!)) {
+      setLikes(likes.filter((uid) => uid !== currentUser?.uid));
       await fetch(`/api/questions/${question.questionId}/unlike`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: currentUser.uid,
+          uid: currentUser?.uid,
         }),
       });
     } else {
-      setLikes([...likes, currentUser.uid]);
+      setLikes([...likes!, currentUser?.uid!]);
       await fetch(`/api/questions/${question.questionId}/like`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: currentUser.uid,
+          uid: currentUser?.uid,
         }),
       });
     }
@@ -144,7 +144,9 @@ const QuestionsCard = (props: Props) => {
                   onClick={handleLike}
                 />
                 {likes.length && (
-                  <Text color={!currentUser && 'gray.400'}>{likes.length}</Text>
+                  <Text color={!currentUser ? 'gray.400' : 'black'}>
+                    {likes.length}
+                  </Text>
                 )}
               </HStack>
             </ButtonGroup>

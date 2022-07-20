@@ -30,7 +30,7 @@ export default async function authHandler(
           twitter: '',
         });
         res.status(201).json({ success: true, user });
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;

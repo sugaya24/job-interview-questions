@@ -4,7 +4,6 @@ import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { Editor } from '@/components/createnewpost';
 import { useAuthContext } from '@/contexts';
-import { useQuestions } from '@/hooks';
 import { Box, Button, HStack, Input } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 // import parse from 'html-react-parser';
@@ -37,9 +36,9 @@ const createNewPost = () => {
       tags: tags,
       likes: [],
       author: {
-        uid: currentUser.uid,
-        name: currentUser.username,
-        avatar: currentUser.photoURL,
+        uid: currentUser?.uid!,
+        name: currentUser?.username!,
+        avatar: currentUser?.photoURL!,
       },
     };
     await fetch(`/api/questions`, {

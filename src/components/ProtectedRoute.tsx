@@ -1,7 +1,7 @@
 import { useAuthContext } from '@/contexts';
 import Router from 'next/router';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute: React.FC<any> = ({ children }) => {
   const { currentUser } = useAuthContext();
   if (!currentUser) {
     if (typeof window !== 'undefined') {

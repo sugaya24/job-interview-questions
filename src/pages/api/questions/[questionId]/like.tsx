@@ -11,7 +11,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     const filter = { questionId: req.query.questionId };
     const question = await Question.findOne(filter);
-    const updatedLikes = [...question.likes, req.body.uid];
+    const updatedLikes = [...question?.likes!, req.body.uid];
     await Question.findOneAndUpdate(filter, {
       $set: {
         likes: updatedLikes,
@@ -21,7 +21,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       success: true,
       message: 'liked a post successfully.',
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({ success: false, message: error.message });
   }
 }

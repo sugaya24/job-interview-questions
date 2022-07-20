@@ -26,7 +26,7 @@ const questionDetail = () => {
   const router = useRouter();
   const { questionId } = router.query;
   const { data, error, isLoading } = useQuestion(
-    Array.isArray(questionId) ? questionId[0] : questionId,
+    typeof questionId === 'string' ? questionId : '',
   );
 
   if (error) return 'error has occurred';
@@ -42,7 +42,7 @@ const questionDetail = () => {
   return (
     <>
       <NextSeo
-        title={data.question.title}
+        title={data?.question.title}
         titleTemplate={'%s | Question Box'}
       />
       <Container flex={'1 0 auto'}>
@@ -78,7 +78,7 @@ const questionDetail = () => {
             <Spacer />
             <Text color={'gray.500'}>
               posted at{' '}
-              {format(new Date(data?.question?.createdAt), 'MMM dd, yyyy')}
+              {format(new Date(data?.question?.createdAt!), 'MMM dd, yyyy')}
             </Text>
           </HStack>
           <Heading mt={4} size={'2xl'} fontWeight={'extrabold'}>
@@ -106,7 +106,7 @@ const questionDetail = () => {
           <Divider mt={4} />
           <Box p={4}>
             {/* <Text>content text</Text> */}
-            {parse(data?.question?.content)}
+            {parse(data?.question?.content!)}
           </Box>
         </Flex>
       </Container>

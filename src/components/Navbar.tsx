@@ -97,7 +97,7 @@ export default function Navbar() {
                     cursor={'pointer'}
                     minW={0}
                   >
-                    <Avatar size={'sm'} src={currentUser.photoURL} />
+                    <Avatar size={'sm'} src={currentUser.photoURL || ''} />
                   </MenuButton>
                 ) : (
                   <Button colorScheme={'linkedin'} onClick={login}>

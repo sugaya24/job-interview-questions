@@ -19,7 +19,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             .status(404)
             .json({ success: true, message: 'question not found' });
         }
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;

@@ -64,14 +64,16 @@ const editProfile = () => {
   const onChangeHandler = (e: { target: { name: string; value: string } }) => {
     const name = e.target.name;
     const value = e.target.value;
-    setCurrentUser({ ...currentUser, [name]: value });
+    setCurrentUser({ ...currentUser!, [name]: value });
   };
 
   const uploadPicture = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target) return;
     const file: File = e.target.files?.[0]!;
-    const filename = encodeURIComponent(currentUser.uid);
-    const extension = encodeURIComponent(file.name.split('.').pop());
+    const filename = encodeURIComponent(currentUser?.uid!);
+    const extension = encodeURIComponent(
+      file.name.split('.').pop() ? file.name.split('.').pop()! : false,
+    );
     const formData = new FormData();
     const params = { filename, extension };
     const query = new URLSearchParams(params);
@@ -90,11 +92,11 @@ const editProfile = () => {
 
     // update user data on db for photoURL
     const s3ObjectUrl = await fetch(
-      `/api/s3/getObjectUrl?key=${currentUser.uid}.${extension}`,
+      `/api/s3/getObjectUrl?key=${currentUser?.uid}.${extension}`,
     )
       .then((res) => res.json())
       .then((data) => data.s3ObjectUrl);
-    await fetch(`/api/users/${currentUser.uid}`, {
+    await fetch(`/api/users/${currentUser?.uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...currentUser, photoURL: s3ObjectUrl }),
@@ -102,22 +104,22 @@ const editProfile = () => {
 
     // set photoURL on currentUser
     const resGetImage = await fetch(
-      `/api/s3/getObjectUrl?key=${currentUser.uid}.${extension}`,
+      `/api/s3/getObjectUrl?key=${currentUser?.uid}.${extension}`,
     );
     const dataGetImage = await resGetImage.json();
-    setCurrentUser({ ...currentUser, photoURL: '' });
-    setCurrentUser({ ...currentUser, photoURL: dataGetImage.s3ObjectUrl });
+    setCurrentUser({ ...currentUser!, photoURL: '' });
+    setCurrentUser({ ...currentUser!, photoURL: dataGetImage?.s3ObjectUrl });
   };
 
   async function onSubmit(values: User) {
-    const res = await fetch(`/api/users/${currentUser.uid}`, {
+    const res = await fetch(`/api/users/${currentUser?.uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
     });
     const data = await res.json();
     if (data.success) {
-      const res = await fetch(`/api/users/${currentUser.uid}`);
+      const res = await fetch(`/api/users/${currentUser?.uid}`);
       const data = await res.json();
       setCurrentUser(data.user);
       toast({
@@ -158,7 +160,10 @@ const editProfile = () => {
         >
           <Stack direction={'row'} gap={8}>
             <VStack>
-              <Avatar size={'xl'} src={currentUser && currentUser.photoURL} />
+              <Avatar
+                size={'xl'}
+                src={(currentUser && currentUser.photoURL) || ''}
+              />
               <Input
                 type={'file'}
                 ref={inputRef}
@@ -182,7 +187,7 @@ const editProfile = () => {
                 <Input
                   bgColor={'gray.100'}
                   placeholder={'Enter Username'}
-                  value={currentUser?.username}
+                  value={currentUser?.username!}
                   {...register('username', {
                     required: {
                       value: true,
@@ -211,7 +216,7 @@ const editProfile = () => {
                     <Input
                       bgColor={'gray.100'}
                       placeholder={'username'}
-                      value={currentUser?.github}
+                      value={currentUser?.github!}
                       {...register('github', {
                         validate: (value) => {
                           if (!value) return true;
@@ -240,7 +245,7 @@ const editProfile = () => {
                     <Input
                       bgColor={'gray.100'}
                       placeholder={'username'}
-                      value={currentUser?.twitter}
+                      value={currentUser?.twitter!}
                       {...register('twitter', {
                         validate: (value) => {
                           if (!value) return true;

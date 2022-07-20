@@ -52,7 +52,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           pagingCounter: result.pagingCounter,
           page: result.page,
         });
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;
@@ -60,7 +60,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       try {
         await Question.create(req.body);
         res.status(201).json({ success: true });
-      } catch (error) {
+      } catch (error: any) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;
