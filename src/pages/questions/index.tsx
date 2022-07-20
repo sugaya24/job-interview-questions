@@ -1,7 +1,5 @@
-import { Question } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
-import { Pagination } from '@/components/Pagination';
 import { QuestionsCard } from '@/components/QuestionsList';
 import { TrendingQuestions } from '@/components/TrendingQuestions';
 import { SearchTags } from '@/components/searchtagas';
@@ -9,6 +7,7 @@ import { LIMIT_DISPLAY_CONTENT_PER_PAGE } from '@/constant';
 import { useQuestions } from '@/hooks';
 import {
   Box,
+  Button,
   Center,
   Divider,
   Grid,
@@ -17,45 +16,24 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import { NextSeo } from 'next-seo';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 export default function questionsPage() {
-  const [pageIndex, setPageIndex] = useState<number>(1);
-  const [questionList, setQuestionList] = useState<any>(null);
-  const { data, error } = useQuestions(pageIndex.toString());
+  const { data, error, size, setSize } = useQuestions();
 
   if (error) return `An error has occurred. => ${error.message}`;
 
-  useEffect(() => {
-    if (!data) {
-      setQuestionList(
-        <Center py={4}>
-          <Spinner />
-        </Center>,
-      );
-    } else {
-      if (data.questions.length === 0) {
-        setQuestionList(<Center>no data</Center>);
-      } else {
-        setQuestionList(
-          data.questions.map(
-            (
-              question: Question & {
-                createdAt: Date;
-                updatedAt: Date;
-              },
-              index: number,
-            ) => (
-              <Box key={question.questionId}>
-                <QuestionsCard w={'100%'} question={question} />
-                {index !== LIMIT_DISPLAY_CONTENT_PER_PAGE - 1 && <Divider />}
-              </Box>
-            ),
-          ),
-        );
-      }
-    }
-  }, [data]);
+  if (!data)
+    return (
+      <Center my={4}>
+        <Spinner />
+      </Center>
+    );
+
+  const questions: any[] = data ? [].concat(...data) : [];
+  const isLoading = size > 0 && data && typeof data[size - 1] === 'undefined';
+  const isReachingEnd =
+    data && data[data.length - 1]?.length < LIMIT_DISPLAY_CONTENT_PER_PAGE;
 
   return (
     <>
@@ -67,23 +45,28 @@ export default function questionsPage() {
           </GridItem>
           <GridItem colSpan={7}>
             <Heading>Questions</Heading>
-            {questionList}
+            {questions.map((question, i) => (
+              <Box key={question.id}>
+                {!i && <Divider />}
+                <QuestionsCard w={'100%'} question={question} />
+                <Divider />
+              </Box>
+            ))}
+            <Center my={4}>
+              <Button
+                isLoading={isLoading}
+                isDisabled={isReachingEnd}
+                colorScheme={'linkedin'}
+                onClick={() => setSize(size + 1)}
+              >
+                {isReachingEnd ? 'No more content' : 'Load More'}
+              </Button>
+            </Center>
           </GridItem>
           <GridItem colSpan={3}>
             <TrendingQuestions />
           </GridItem>
         </Grid>
-        <Pagination
-          hasNextPage={data?.hasNextPage}
-          hasPrevPage={data?.hasPrevPage}
-          page={data?.page}
-          totalPages={data?.totalPages}
-          pagingCounter={data?.pagingCounter}
-          setPageIndex={setPageIndex}
-          // totalDocs={data?.totalDocs}
-          // limit={data?.limit}
-          // prevPage={data?.prevPage}
-        />
       </Container>
     </>
   );

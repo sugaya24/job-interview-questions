@@ -80,7 +80,7 @@ const QuestionsCard = (props: Props) => {
     <Stack
       w={`100%`}
       mt={6}
-      mb={2}
+      mb={4}
       direction={'row'}
       spacing={4}
       align={'start'}
