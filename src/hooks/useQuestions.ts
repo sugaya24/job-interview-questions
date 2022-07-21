@@ -5,6 +5,10 @@ export const useQuestions = () => {
   const { data, error, mutate, size, setSize } = useSWRInfinite(
     (index) => `/api/questions?page=${index + 1}`,
     fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateFirstPage: false,
+    },
   );
   return {
     data,
