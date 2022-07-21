@@ -22,6 +22,8 @@ import React, { useEffect, useState } from 'react';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { BsBookmark, BsFillBookmarkCheckFill } from 'react-icons/bs';
 
+import { EditMenu } from '.';
+
 interface Props {
   w: string;
   question: Question & { createdAt: Date; updatedAt: Date };
@@ -133,6 +135,7 @@ const QuestionsCard = (props: Props) => {
           ))}
           <Spacer />
           <HStack>
+            {currentUser?.uid === question.author.uid && <EditMenu />}
             <ButtonGroup spacing={0}>
               <HStack spacing={0}>
                 <IconButton
