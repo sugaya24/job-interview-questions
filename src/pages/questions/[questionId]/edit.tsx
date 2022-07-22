@@ -27,6 +27,7 @@ const editPage = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
+  const [hasContent, setHasContent] = useState<boolean>(false);
   const editor = createEditor();
 
   useEffect(() => {
@@ -69,6 +70,7 @@ const editPage = () => {
   const onChange = (editorState: EditorState, editor: LexicalEditor) => {
     editorState.read(() => {
       setEditorState(editorState);
+      setHasContent(!(editorState?._nodeMap.size === 2) && !undefined);
     });
     editor.update(() => {
       const htmlFromNodes = $generateHtmlFromNodes(editor);
@@ -123,7 +125,7 @@ const editPage = () => {
             <Editor onChange={onChange} initialEditorState={editorState} />
             <HStack mt={4}>
               <Button
-                isDisabled={!currentUser || isPosting}
+                isDisabled={!currentUser || isPosting || !hasContent || !title}
                 isLoading={isPosting}
                 colorScheme={'blue'}
                 onClick={postContent}

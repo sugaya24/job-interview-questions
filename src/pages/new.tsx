@@ -24,10 +24,12 @@ const createNewPost = () => {
   const [editorState, setEditorState] = useState<EditorState | undefined>(
     undefined,
   );
+  const [hasContent, setHasContent] = useState<boolean>(false);
 
   function onChange(editorState: EditorState, editor: LexicalEditor) {
     editorState.read(() => {
       setEditorState(editorState);
+      setHasContent(!(editorState?._nodeMap.size === 2) && !undefined);
     });
     editor.update(() => {
       const htmlFromNodes = $generateHtmlFromNodes(editor);
@@ -41,7 +43,6 @@ const createNewPost = () => {
       questionId: nanoid(10),
       content: htmlString,
       editorState: JSON.stringify(editorState!),
-      // editorState: editorState!,
       title: title,
       tags: tags,
       likes: [],
@@ -88,7 +89,7 @@ const createNewPost = () => {
           <Editor onChange={onChange} initialEditorState={undefined} />
           <HStack mt={4}>
             <Button
-              isDisabled={!currentUser || isPosting}
+              isDisabled={!currentUser || isPosting || !hasContent || !title}
               isLoading={isPosting}
               colorScheme={'blue'}
               onClick={postContent}
