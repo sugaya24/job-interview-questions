@@ -9,6 +9,7 @@ import {
   Flex,
   HStack,
   Heading,
+  IconButton,
   Link,
   Spacer,
   Spinner,
@@ -21,6 +22,7 @@ import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
+import { BiEditAlt } from 'react-icons/bi';
 
 const questionDetail = () => {
   const router = useRouter();
@@ -76,10 +78,19 @@ const questionDetail = () => {
               </Link>
             </NextLink>
             <Spacer />
-            <Text color={'gray.500'}>
-              posted at{' '}
-              {format(new Date(data?.question?.createdAt!), 'MMM dd, yyyy')}
-            </Text>
+            <HStack>
+              <NextLink href={`/questions/${data?.question.questionId}/edit`}>
+                <IconButton
+                  aria-label={'edit'}
+                  variant={'outline'}
+                  icon={<BiEditAlt />}
+                />
+              </NextLink>
+              <Text color={'gray.500'}>
+                posted at{' '}
+                {format(new Date(data?.question?.createdAt!), 'MMM dd, yyyy')}
+              </Text>
+            </HStack>
           </HStack>
           <Heading mt={4} size={'2xl'} fontWeight={'extrabold'}>
             {data?.question?.title}

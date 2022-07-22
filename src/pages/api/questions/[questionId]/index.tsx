@@ -23,6 +23,24 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.status(400).json({ success: false, message: error.message });
       }
       break;
+    case 'PUT':
+      const filter = { questionId: query.questionId };
+      const { title, content, tags, likes, editorState } = req.body;
+      try {
+        await Question.findOneAndUpdate(filter, {
+          $set: {
+            title: title,
+            content: content,
+            editorState: editorState,
+            tags: tags,
+            likes: likes,
+          },
+        });
+        res.status(200).json({});
+      } catch {
+        res.status(400).json('error');
+      }
+      break;
     default:
       break;
   }

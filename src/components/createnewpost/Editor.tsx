@@ -12,7 +12,10 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 // OnChangePlugin
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import {
+  InitialEditorStateType,
+  RichTextPlugin,
+} from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import type { EditorState, LexicalEditor } from 'lexical';
@@ -48,7 +51,7 @@ const editorConfig = {
   // The editor theme
   theme: customTheme,
   // Handling of errors during update
-  onError(error) {
+  onError(error: any) {
     throw error;
   },
   // Any custom nodes go here
@@ -69,9 +72,10 @@ const editorConfig = {
 
 type Props = {
   onChange: (editorState: EditorState, editor: LexicalEditor) => void;
+  initialEditorState: InitialEditorStateType | undefined;
 };
 
-export default function Editor({ onChange }: Props) {
+export default function Editor({ onChange, initialEditorState }: Props) {
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <Box
@@ -101,6 +105,7 @@ export default function Editor({ onChange }: Props) {
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
             placeholder={<Placeholder />}
+            initialEditorState={initialEditorState}
           />
           <OnChangePlugin onChange={onChange} />
           <HistoryPlugin />

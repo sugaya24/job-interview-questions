@@ -17,6 +17,10 @@ const questionSchema: Schema = new mongoose.Schema<QuestionDocument>(
       type: String,
       required: true,
     },
+    editorState: {
+      type: String,
+      required: true,
+    },
     tags: Array,
     likes: Array,
     author: {

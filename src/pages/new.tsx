@@ -8,7 +8,7 @@ import { useQuestions } from '@/hooks';
 import { Box, Button, HStack, Input } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 // import parse from 'html-react-parser';
-import type { EditorState, LexicalEditor } from 'lexical';
+import { EditorState, LexicalEditor } from 'lexical';
 import { nanoid } from 'nanoid';
 import { NextSeo } from 'next-seo';
 import router from 'next/router';
@@ -21,8 +21,14 @@ const createNewPost = () => {
   const [isPosting, setIsPosting] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
+  const [editorState, setEditorState] = useState<EditorState | undefined>(
+    undefined,
+  );
 
-  function onChange(_editorState: EditorState, editor: LexicalEditor) {
+  function onChange(editorState: EditorState, editor: LexicalEditor) {
+    editorState.read(() => {
+      setEditorState(editorState);
+    });
     editor.update(() => {
       const htmlFromNodes = $generateHtmlFromNodes(editor);
       setHtmlString(htmlFromNodes);
@@ -34,6 +40,8 @@ const createNewPost = () => {
     const newPost: Question = {
       questionId: nanoid(10),
       content: htmlString,
+      editorState: JSON.stringify(editorState!),
+      // editorState: editorState!,
       title: title,
       tags: tags,
       likes: [],
@@ -77,7 +85,7 @@ const createNewPost = () => {
             onChange={(e) => setTitle(e.target.value)}
           />
           <ChakraTagInput tags={tags} setTags={setTags} />
-          <Editor onChange={onChange} />
+          <Editor onChange={onChange} initialEditorState={undefined} />
           <HStack mt={4}>
             <Button
               isDisabled={!currentUser || isPosting}
