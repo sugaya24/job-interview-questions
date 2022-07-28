@@ -13,7 +13,7 @@ import {
 
 type AuthContextProps = {
   currentUser: User | null | undefined;
-  setCurrentUser: Dispatch<SetStateAction<User>>;
+  setCurrentUser: Dispatch<SetStateAction<User | null | undefined>>;
   isLoading: boolean;
 };
 
@@ -23,7 +23,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null | undefined>(
     undefined,
   );
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   if (isServer()) {
     return (
@@ -33,7 +32,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     getRedirectResult(auth).then(async (credentials) => {
-      if (!credentials) return;
+      if (!credentials) {
+        return;
+      }
       const res = await fetch(`/api/users/${credentials.user.uid}`);
       const data = await res.json();
       if (!data.user) {
@@ -52,7 +53,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         const res = await fetch(`/api/users/${credentials.user.uid}`);
         const data = await res.json();
         setCurrentUser(data.user);
-        setIsLoading(false);
       }
     });
 
@@ -64,7 +64,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       const res = await fetch(`/api/users/${user.uid}`);
       const data = await res.json();
       setCurrentUser(data.user);
-      setIsLoading(false);
     });
     return () => {
       unsubscribe();
@@ -72,7 +71,13 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, setCurrentUser, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser,
+        isLoading: currentUser === undefined,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
