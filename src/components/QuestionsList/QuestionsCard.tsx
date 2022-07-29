@@ -100,7 +100,7 @@ const QuestionsCard = (props: Props) => {
                 color: 'blackAlpha.600',
               }}
             >
-              <Text fontWeight={600}>{question.author.name}</Text>
+              <Text fontWeight={600}>{data?.user.username}</Text>
             </Link>
           </NextLink>
           <Spacer />

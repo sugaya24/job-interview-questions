@@ -1,11 +1,12 @@
 import {
   Box,
-  HStack,
   Input,
   InputProps,
   Tag,
   TagCloseButton,
   TagLabel,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import { normalizeProps, useMachine } from '@zag-js/react';
 import * as tagsInput from '@zag-js/tags-input';
@@ -17,12 +18,18 @@ type props = {
 };
 
 const CustomInput = (props: InputProps | any) => {
-  return <Input {...props} />;
+  return <Input size={'sm'} borderRadius={'md'} {...props} />;
 };
 
 export const ChakraTagInput = ({ tags, setTags }: props) => {
   const [state, send] = useMachine(
-    tagsInput.machine({ name: 'tags', value: tags || [], id: 'id' }),
+    tagsInput.machine({
+      name: 'tags',
+      value: tags || [],
+      id: 'id',
+      maxLength: 15,
+      max: 5,
+    }),
   );
   const api = tagsInput.connect(state, send, normalizeProps);
 
@@ -31,13 +38,20 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
   }, [api.value]);
 
   return (
-    <Box {...api.rootProps} mb={4}>
-      <HStack gap={1} {...api.controlProps}>
+    <Box
+      {...api.rootProps}
+      p={2}
+      mb={4}
+      bgColor={'white'}
+      border={'1px solid'}
+      borderColor={'blackAlpha.400'}
+      borderRadius={'2xl'}
+    >
+      <Wrap gap={1} {...api.controlProps}>
         {api.value.map((value, index) => (
-          <Box as={'span'} key={index}>
+          <WrapItem as={'span'} key={index}>
             <Box
               display={'inline-block'}
-              gap={1}
               {...api.getTagProps({ index, value })}
             >
               <Tag size={'lg'}>
@@ -52,7 +66,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
               </Tag>
             </Box>
             <CustomInput {...api.getTagInputProps({ index, value })} />
-          </Box>
+          </WrapItem>
         ))}
         <CustomInput
           w={'auto'}
@@ -60,7 +74,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
           border={'0'}
           {...api.inputProps}
         />
-      </HStack>
+      </Wrap>
       <CustomInput {...api.hiddenInputProps} />
     </Box>
   );
