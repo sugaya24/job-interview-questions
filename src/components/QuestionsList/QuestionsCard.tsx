@@ -1,5 +1,6 @@
 import { Question } from '@/common/Question';
 import { useAuthContext } from '@/contexts';
+import { useUser } from '@/hooks/useUser';
 import {
   Avatar,
   Box,
@@ -35,6 +36,7 @@ const QuestionsCard = (props: Props) => {
   );
   const { currentUser } = useAuthContext();
   const { question } = props;
+  const { data } = useUser(question.author.uid);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likes, setLikes] = useState(question.likes);
   const [isLiked, setIsLiked] = useState(false);
@@ -88,7 +90,7 @@ const QuestionsCard = (props: Props) => {
       align={'start'}
       {...styleProps}
     >
-      <Avatar src={question.author.avatar} />
+      <Avatar src={data?.user.photoURL || ''} />
       <Stack w={'100%'} direction={'column'} spacing={2} fontSize={'sm'}>
         <HStack className={'top-part'}>
           <NextLink href={`/users/${question.author.uid}`} passHref>
