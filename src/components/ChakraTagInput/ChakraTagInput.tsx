@@ -33,22 +33,29 @@ const CustomInput = (props: InputProps | StyleProps | any) => {
         placeholder={'Add Tags...'}
         size={'sm'}
         borderRadius={'md'}
-        border={'0'}
         {...props.inputProps}
+        // override onKeyDown in inputProps
+        onKeyDown={() => {}}
       />
     </InputGroup>
   );
 };
 
-const AutoComplete = ({ items }: { items: string[] }) => {
-  const { isOpen } = useAutoCompleteContext();
+const AutoComplete = ({
+  items,
+  addValue,
+}: {
+  items: string[];
+  addValue: (value: string) => void;
+}) => {
+  const { isOpen, cursorIdx, setCursorIdx } = useAutoCompleteContext();
+
   return (
     <>
       {isOpen && items.length > 0 && (
         <Box
           w={'100%'}
           h={'auto'}
-          p={2}
           pos={'absolute'}
           bgColor={'white'}
           zIndex={'popover'}
@@ -58,8 +65,19 @@ const AutoComplete = ({ items }: { items: string[] }) => {
           borderRadius={'md'}
         >
           <List>
-            {items.map((item) => (
-              <ListItem key={item}>{item}</ListItem>
+            {items.map((item, i) => (
+              <ListItem
+                p={2}
+                key={item}
+                role={'option'}
+                aria-selected={i === cursorIdx}
+                cursor={'pointer'}
+                _selected={{ bgColor: 'gray.200' }}
+                onMouseDown={() => addValue(item)}
+                onMouseEnter={() => setCursorIdx(i)}
+              >
+                {item}
+              </ListItem>
             ))}
           </List>
         </Box>
@@ -91,6 +109,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
   const [sorted, setSorted] = useState<string[]>(
     EXAMPLE_TAGS.map((tag) => tag.id),
   );
+  const { cursorIdx, setCursorIdx, isOpen } = useAutoCompleteContext();
   const [state, send] = useMachine(
     tagsInput.machine({
       name: 'tags',
@@ -102,30 +121,42 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
   );
   const api = tagsInput.connect(state, send, normalizeProps);
 
-  const handleKeydownArrowUp = (e: { code: string }) => {
+  const handleKeydown = (e: KeyboardEvent) => {
     if (e.code === 'ArrowUp') {
-      // TODO: select an element in autocomplete suggestions
+      if (isOpen && cursorIdx > 0) {
+        setCursorIdx((prev) => --prev);
+      }
     }
-  };
-  const handleKeydownArrowDown = (e: { code: string }) => {
     if (e.code === 'ArrowDown') {
-      // TODO: select an element in autocomplete suggestions
+      if (isOpen && cursorIdx < sorted.length - 1) {
+        setCursorIdx((prev) => ++prev);
+      }
+    }
+    if (e.code === 'Enter') {
+      if (isOpen && cursorIdx > -1) {
+        e.preventDefault();
+        api.addValue(sorted[cursorIdx]);
+      } else if (api.inputValue) {
+        api.addValue(api.inputValue);
+      }
     }
   };
 
   useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, [sorted, cursorIdx, isOpen]);
+
+  useEffect(() => {
+    setCursorIdx(-1);
     const tagsIds = EXAMPLE_TAGS.map((tag) => tag.id);
     if (!api.inputValue.length) {
       setSorted([]);
     } else {
       setSorted(matchSorter(tagsIds, api.inputValue));
     }
-    window.addEventListener('keydown', handleKeydownArrowUp);
-    window.addEventListener('keydown', handleKeydownArrowDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeydownArrowUp);
-      window.removeEventListener('keydown', handleKeydownArrowDown);
-    };
   }, [api.inputValue]);
 
   useEffect(() => {
@@ -165,7 +196,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
         ))}
         <Flex flexDir={'column'} pos={'relative'} gap={2}>
           <CustomInput sorted={sorted} inputProps={api.inputProps} />
-          <AutoComplete items={sorted} />
+          <AutoComplete items={sorted} addValue={api.addValue} />
         </Flex>
       </Wrap>
       <input {...api.hiddenInputProps} />

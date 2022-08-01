@@ -10,15 +10,20 @@ import {
 type AutoCompleteContextProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  cursorIdx: number;
+  setCursorIdx: Dispatch<SetStateAction<number>>;
 };
 
 const AutoCompleteContext = createContext({} as AutoCompleteContextProps);
 
 export const AutoCompleteContextProvider: FC = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [cursorIdx, setCursorIdx] = useState<number>(-1);
 
   return (
-    <AutoCompleteContext.Provider value={{ isOpen, setIsOpen }}>
+    <AutoCompleteContext.Provider
+      value={{ isOpen, setIsOpen, cursorIdx, setCursorIdx }}
+    >
       {children}
     </AutoCompleteContext.Provider>
   );
