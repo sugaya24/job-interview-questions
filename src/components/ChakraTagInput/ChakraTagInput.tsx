@@ -44,15 +44,17 @@ const CustomInput = (props: InputProps | StyleProps | any) => {
 const AutoComplete = ({
   items,
   addValue,
+  inputValue,
 }: {
   items: string[];
   addValue: (value: string) => void;
+  inputValue: string;
 }) => {
   const { isOpen, cursorIdx, setCursorIdx } = useAutoCompleteContext();
 
   return (
     <>
-      {isOpen && items.length > 0 && (
+      {isOpen && items.length > 0 && inputValue.length > 1 && (
         <Box
           w={'100%'}
           h={'auto'}
@@ -86,30 +88,25 @@ const AutoComplete = ({
   );
 };
 
-type TTags = {
-  id: string;
-  name: string;
-};
-const EXAMPLE_TAGS: TTags[] = [
-  {
-    id: 'typescript',
-    name: 'TypeScript',
-  },
-  {
-    id: 'nextjs',
-    name: 'Next.js',
-  },
-  {
-    id: 'nodejs',
-    name: 'Node.js',
-  },
-];
+// const EXAMPLE_TAGS: TTag[] = [
+//   {
+//     tagId: 'typescript',
+//     name: 'TypeScript',
+//   },
+//   {
+//     tagId: 'nextjs',
+//     name: 'Next.js',
+//   },
+//   {
+//     tagId: 'nodejs',
+//     name: 'Node.js',
+//   },
+// ];
 
 export const ChakraTagInput = ({ tags, setTags }: props) => {
-  const [sorted, setSorted] = useState<string[]>(
-    EXAMPLE_TAGS.map((tag) => tag.id),
-  );
-  const { cursorIdx, setCursorIdx, isOpen } = useAutoCompleteContext();
+  const [sorted, setSorted] = useState<string[]>([]);
+  const { cursorIdx, setCursorIdx, isOpen, tagsList } =
+    useAutoCompleteContext();
   const [state, send] = useMachine(
     tagsInput.machine({
       name: 'tags',
@@ -151,13 +148,13 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
 
   useEffect(() => {
     setCursorIdx(-1);
-    const tagsIds = EXAMPLE_TAGS.map((tag) => tag.id);
+    const tagsIds = tagsList.map((tag) => tag.tagId);
     if (!api.inputValue.length) {
       setSorted([]);
     } else {
-      setSorted(matchSorter(tagsIds, api.inputValue));
+      setSorted(matchSorter(tagsIds, api.inputValue).slice(0, 5));
     }
-  }, [api.inputValue]);
+  }, [api.inputValue, tagsList]);
 
   useEffect(() => {
     setTags([...api.value]);
@@ -196,7 +193,11 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
         ))}
         <Flex flexDir={'column'} pos={'relative'} gap={2}>
           <CustomInput sorted={sorted} inputProps={api.inputProps} />
-          <AutoComplete items={sorted} addValue={api.addValue} />
+          <AutoComplete
+            items={sorted}
+            addValue={api.addValue}
+            inputValue={api.inputValue}
+          />
         </Flex>
       </Wrap>
       <input {...api.hiddenInputProps} />
