@@ -13,6 +13,7 @@ import {
   TagLabel,
   Wrap,
   WrapItem,
+  useToast,
 } from '@chakra-ui/react';
 import { normalizeProps, useMachine } from '@zag-js/react';
 import * as tagsInput from '@zag-js/tags-input';
@@ -88,22 +89,8 @@ const AutoComplete = ({
   );
 };
 
-// const EXAMPLE_TAGS: TTag[] = [
-//   {
-//     tagId: 'typescript',
-//     name: 'TypeScript',
-//   },
-//   {
-//     tagId: 'nextjs',
-//     name: 'Next.js',
-//   },
-//   {
-//     tagId: 'nodejs',
-//     name: 'Node.js',
-//   },
-// ];
-
 export const ChakraTagInput = ({ tags, setTags }: props) => {
+  const toast = useToast();
   const [sorted, setSorted] = useState<string[]>([]);
   const { cursorIdx, setCursorIdx, isOpen, tagsList } =
     useAutoCompleteContext();
@@ -114,6 +101,25 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
       id: 'id',
       maxLength: 15,
       max: 5,
+      validate: ({
+        inputValue,
+        values,
+      }: {
+        inputValue: string;
+        values: string[];
+      }) => {
+        if (values.includes(inputValue)) {
+          toast({
+            status: 'error',
+            title: 'The tag is already added.',
+            isClosable: true,
+            duration: 5000,
+            position: 'top-left',
+          });
+          return false;
+        }
+        return true;
+      },
     }),
   );
   const api = tagsInput.connect(state, send, normalizeProps);
