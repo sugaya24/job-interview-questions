@@ -1,7 +1,13 @@
+import { useAutoCompleteContext } from '@/contexts';
 import {
   Box,
+  Flex,
   Input,
+  InputGroup,
   InputProps,
+  List,
+  ListItem,
+  StyleProps,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -10,18 +16,97 @@ import {
 } from '@chakra-ui/react';
 import { normalizeProps, useMachine } from '@zag-js/react';
 import * as tagsInput from '@zag-js/tags-input';
-import { useEffect } from 'react';
+import { matchSorter } from 'match-sorter';
+import { useEffect, useState } from 'react';
 
 type props = {
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const CustomInput = (props: InputProps | any) => {
-  return <Input size={'sm'} borderRadius={'md'} {...props} />;
+const CustomInput = (props: InputProps | StyleProps | any) => {
+  const { setIsOpen } = useAutoCompleteContext();
+  return (
+    <InputGroup onFocus={() => setIsOpen(true)} onBlur={() => setIsOpen(false)}>
+      <Input
+        w={'200px'}
+        placeholder={'Add Tags...'}
+        size={'sm'}
+        borderRadius={'md'}
+        {...props.inputProps}
+        // override onKeyDown in inputProps
+        onKeyDown={() => {}}
+      />
+    </InputGroup>
+  );
 };
 
+const AutoComplete = ({
+  items,
+  addValue,
+  inputValue,
+}: {
+  items: string[];
+  addValue: (value: string) => void;
+  inputValue: string;
+}) => {
+  const { isOpen, cursorIdx, setCursorIdx } = useAutoCompleteContext();
+
+  return (
+    <>
+      {isOpen && items.length > 0 && inputValue.length > 1 && (
+        <Box
+          w={'100%'}
+          h={'auto'}
+          pos={'absolute'}
+          bgColor={'white'}
+          zIndex={'popover'}
+          top={'100%'}
+          border={'1px solid'}
+          borderColor={'blackAlpha.400'}
+          borderRadius={'md'}
+        >
+          <List>
+            {items.map((item, i) => (
+              <ListItem
+                p={2}
+                key={item}
+                role={'option'}
+                aria-selected={i === cursorIdx}
+                cursor={'pointer'}
+                _selected={{ bgColor: 'gray.200' }}
+                onMouseDown={() => addValue(item)}
+                onMouseEnter={() => setCursorIdx(i)}
+              >
+                {item}
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      )}
+    </>
+  );
+};
+
+// const EXAMPLE_TAGS: TTag[] = [
+//   {
+//     tagId: 'typescript',
+//     name: 'TypeScript',
+//   },
+//   {
+//     tagId: 'nextjs',
+//     name: 'Next.js',
+//   },
+//   {
+//     tagId: 'nodejs',
+//     name: 'Node.js',
+//   },
+// ];
+
 export const ChakraTagInput = ({ tags, setTags }: props) => {
+  const [sorted, setSorted] = useState<string[]>([]);
+  const { cursorIdx, setCursorIdx, isOpen, tagsList } =
+    useAutoCompleteContext();
   const [state, send] = useMachine(
     tagsInput.machine({
       name: 'tags',
@@ -32,6 +117,44 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
     }),
   );
   const api = tagsInput.connect(state, send, normalizeProps);
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.code === 'ArrowUp') {
+      if (isOpen && cursorIdx > 0) {
+        setCursorIdx((prev) => --prev);
+      }
+    }
+    if (e.code === 'ArrowDown') {
+      if (isOpen && cursorIdx < sorted.length - 1) {
+        setCursorIdx((prev) => ++prev);
+      }
+    }
+    if (e.code === 'Enter') {
+      if (isOpen && cursorIdx > -1) {
+        e.preventDefault();
+        api.addValue(sorted[cursorIdx]);
+      } else if (api.inputValue) {
+        api.addValue(api.inputValue);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, [sorted, cursorIdx, isOpen]);
+
+  useEffect(() => {
+    setCursorIdx(-1);
+    const tagsIds = tagsList.map((tag) => tag.tagId);
+    if (!api.inputValue.length) {
+      setSorted([]);
+    } else {
+      setSorted(matchSorter(tagsIds, api.inputValue).slice(0, 5));
+    }
+  }, [api.inputValue, tagsList]);
 
   useEffect(() => {
     setTags([...api.value]);
@@ -47,7 +170,7 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
       borderColor={'blackAlpha.400'}
       borderRadius={'2xl'}
     >
-      <Wrap gap={1} {...api.controlProps}>
+      <Wrap {...api.controlProps}>
         {api.value.map((value, index) => (
           <WrapItem as={'span'} key={index}>
             <Box
@@ -65,17 +188,19 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
                 />
               </Tag>
             </Box>
-            <CustomInput {...api.getTagInputProps({ index, value })} />
+            <input {...api.getTagInputProps({ index, value })} />
           </WrapItem>
         ))}
-        <CustomInput
-          w={'auto'}
-          placeholder={'Add Tags...'}
-          border={'0'}
-          {...api.inputProps}
-        />
+        <Flex flexDir={'column'} pos={'relative'} gap={2}>
+          <CustomInput sorted={sorted} inputProps={api.inputProps} />
+          <AutoComplete
+            items={sorted}
+            addValue={api.addValue}
+            inputValue={api.inputValue}
+          />
+        </Flex>
       </Wrap>
-      <CustomInput {...api.hiddenInputProps} />
+      <input {...api.hiddenInputProps} />
     </Box>
   );
 };
