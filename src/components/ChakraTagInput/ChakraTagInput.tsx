@@ -1,6 +1,7 @@
 import { useAutoCompleteContext } from '@/contexts';
 import {
   Box,
+  Center,
   Flex,
   Input,
   InputGroup,
@@ -27,6 +28,16 @@ type props = {
 
 const CustomInput = (props: InputProps | StyleProps | any) => {
   const { setIsOpen } = useAutoCompleteContext();
+  const [isValidInput, setIsValidInput] = useState(true);
+
+  useEffect(() => {
+    if (/^[a-z0-9]*$/gm.test(props.inputValue)) {
+      setIsValidInput(true);
+    } else {
+      setIsValidInput(false);
+    }
+  }, [props.inputValue]);
+
   return (
     <InputGroup onFocus={() => setIsOpen(true)} onBlur={() => setIsOpen(false)}>
       <Input
@@ -38,6 +49,9 @@ const CustomInput = (props: InputProps | StyleProps | any) => {
         // override onKeyDown in inputProps
         onKeyDown={() => {}}
       />
+      {!isValidInput && (
+        <Center color={'red'}>Not allowed symbols and spaces.</Center>
+      )}
     </InputGroup>
   );
 };
@@ -198,7 +212,11 @@ export const ChakraTagInput = ({ tags, setTags }: props) => {
           </WrapItem>
         ))}
         <Flex flexDir={'column'} pos={'relative'} gap={2}>
-          <CustomInput sorted={sorted} inputProps={api.inputProps} />
+          <CustomInput
+            sorted={sorted}
+            inputProps={api.inputProps}
+            inputValue={api.inputValue}
+          />
           <AutoComplete
             items={sorted}
             addValue={api.addValue}
