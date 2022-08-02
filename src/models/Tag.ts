@@ -5,7 +5,7 @@ export interface ITag extends TTag, Document {}
 
 const tagSchema: Schema = new mongoose.Schema(
   {
-    id: { type: String, required: true },
+    tagId: { type: String, required: true },
     name: { type: String, required: true },
   },
   { timestamps: true },

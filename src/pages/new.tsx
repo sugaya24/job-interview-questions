@@ -10,7 +10,7 @@ import { EditorState, LexicalEditor } from 'lexical';
 import { nanoid } from 'nanoid';
 import { NextSeo } from 'next-seo';
 import router from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 
 const createNewPost = () => {
   const { currentUser } = useAuthContext();
@@ -54,6 +54,11 @@ const createNewPost = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newPost),
+    });
+    await fetch(`/api/tags`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tags: tags }),
     });
     setIsPosting(false);
     mutate();

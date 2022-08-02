@@ -92,6 +92,11 @@ const editPage = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatePost),
     });
+    await fetch('/api/tags', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tags: tags }),
+    });
     setIsPosting(false);
     mutate();
     router.push('/questions');
