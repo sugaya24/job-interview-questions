@@ -1,14 +1,14 @@
 import { Question } from '@/common';
-import { ChakraTagInput } from '@/components/ChakraTagInput';
 import { Container } from '@/components/Container';
+import EditorBlock from '@/components/EditorBlock';
 import Navbar from '@/components/Navbar';
-import { Editor } from '@/components/createnewpost';
 import { useAuthContext } from '@/contexts';
 import { useQuestions } from '@/hooks';
 import { QuestionDocument } from '@/models/Question';
-import { Box, Button, Center, HStack, Input, Spinner } from '@chakra-ui/react';
+import { Box, Center, Spinner } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { EditorState, LexicalEditor, createEditor } from 'lexical';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -99,41 +99,22 @@ const editPage = () => {
 
   return (
     <>
+      <NextSeo title={'Question Box'} titleTemplate={'Edit | %s'} />
       <Box h={'100vh'} display={'flex'} flexDir={'column'}>
         <Navbar />
         <Container py={4} flex={'1 0 auto'}>
-          <Box
-            w={'container.lg'}
-            h={'100%'}
-            flexGrow={1}
-            display={'flex'}
-            flexDir={'column'}
-          >
-            <Input
-              w={'100%'}
-              mb={4}
-              value={title}
-              outline={'none'}
-              size={'lg'}
-              fontSize={'lg'}
-              focusBorderColor={'none'}
-              bgColor={'white'}
-              placeholder={'Title'}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <ChakraTagInput tags={tags} setTags={setTags} />
-            <Editor onChange={onChange} initialEditorState={editorState} />
-            <HStack mt={4}>
-              <Button
-                isDisabled={!currentUser || isPosting || !hasContent || !title}
-                isLoading={isPosting}
-                colorScheme={'blue'}
-                onClick={postContent}
-              >
-                Post
-              </Button>
-            </HStack>
-          </Box>
+          <EditorBlock
+            title={title}
+            setTitle={setTitle}
+            tags={tags}
+            setTags={setTags}
+            onChange={onChange}
+            editorState={editorState}
+            currentUser={currentUser}
+            isPosting={isPosting}
+            hasContent={hasContent}
+            postContent={postContent}
+          />
         </Container>
       </Box>
     </>

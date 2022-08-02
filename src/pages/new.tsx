@@ -1,13 +1,11 @@
 import { Question } from '@/common';
-import { ChakraTagInput } from '@/components/ChakraTagInput';
 import { Container } from '@/components/Container';
-import Layout from '@/components/Layout';
-import { Editor } from '@/components/createnewpost';
+import EditorBlock from '@/components/EditorBlock';
+import Navbar from '@/components/Navbar';
 import { useAuthContext } from '@/contexts';
 import { useQuestions } from '@/hooks';
-import { Box, Button, HStack, Input } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
-// import parse from 'html-react-parser';
 import { EditorState, LexicalEditor } from 'lexical';
 import { nanoid } from 'nanoid';
 import { NextSeo } from 'next-seo';
@@ -65,48 +63,25 @@ const createNewPost = () => {
   return (
     <>
       <NextSeo title={'Question Box'} titleTemplate={'Create New Post | %s'} />
-      <Container py={4} flexGrow={1}>
-        <Box
-          w={'container.lg'}
-          h={'100%'}
-          flexGrow={1}
-          display={'flex'}
-          flexDir={'column'}
-        >
-          <Input
-            w={'100%'}
-            mb={4}
-            value={title}
-            outline={'none'}
-            size={'lg'}
-            fontSize={'lg'}
-            focusBorderColor={'none'}
-            bgColor={'white'}
-            placeholder={'Title'}
-            onChange={(e) => setTitle(e.target.value)}
+      <Box h={'100vh'} display={'flex'} flexDir={'column'}>
+        <Navbar />
+        <Container py={4} flexGrow={1}>
+          <EditorBlock
+            title={title}
+            setTitle={setTitle}
+            tags={tags}
+            setTags={setTags}
+            onChange={onChange}
+            editorState={editorState}
+            currentUser={currentUser}
+            isPosting={isPosting}
+            hasContent={hasContent}
+            postContent={postContent}
           />
-          <ChakraTagInput tags={tags} setTags={setTags} />
-          <Editor onChange={onChange} initialEditorState={undefined} />
-          <HStack mt={4}>
-            <Button
-              isDisabled={!currentUser || isPosting || !hasContent || !title}
-              isLoading={isPosting}
-              colorScheme={'blue'}
-              onClick={postContent}
-            >
-              Post
-            </Button>
-            {/* <Button variant={'outline'} colorScheme={'yellow'}>
-            Save Draft
-          </Button> */}
-          </HStack>
-        </Box>
-      </Container>
+        </Container>
+      </Box>
     </>
   );
 };
 
 export default createNewPost;
-createNewPost.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};
