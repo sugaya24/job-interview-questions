@@ -21,7 +21,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           res.status(400).end();
           return;
         }
-        const query: FilterQuery<QuestionDocument> = {};
+        const query: FilterQuery<QuestionDocument> = req.query.tag
+          ? {
+              tags: {
+                $in:
+                  typeof req.query.tag === 'string'
+                    ? [req.query.tag]
+                    : req.query.tag,
+              },
+            }
+          : {};
         const options: PaginateOptions = {
           pagination: true,
           limit: LIMIT_DISPLAY_CONTENT_PER_PAGE,

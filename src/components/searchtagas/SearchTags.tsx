@@ -21,10 +21,15 @@ import { Container } from '../Container';
 
 const LIMIT_SUGGESTION_TAGS = 10;
 
-const SearchTags = () => {
+type Props = {
+  selectedTags: string[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+const SearchTags = (props: Props) => {
+  const { selectedTags, setSelectedTags } = props;
   const [suggestTags, setSuggestTags] = useState<ITag[]>([]);
   const [sortedTags, setSortedTags] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [input, setInput] = useState('');
 
   useEffect(() => {

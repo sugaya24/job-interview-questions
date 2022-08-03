@@ -1,6 +1,6 @@
-import { Question } from '@/common/Question';
 import { useAuthContext } from '@/contexts';
 import { useUser } from '@/hooks/useUser';
+import { QuestionDocument } from '@/models/Question';
 import {
   Avatar,
   Box,
@@ -25,9 +25,13 @@ import { BsBookmark, BsFillBookmarkCheckFill } from 'react-icons/bs';
 
 import { EditMenu } from '.';
 
+export type QuestionDoc = QuestionDocument & {
+  createdAt: Date;
+  updatedAt: Date;
+};
 interface Props {
   w: string;
-  question: Question & { createdAt: Date; updatedAt: Date };
+  question: QuestionDoc;
 }
 
 const QuestionsCard = (props: Props) => {
