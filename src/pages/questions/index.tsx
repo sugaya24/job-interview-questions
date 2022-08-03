@@ -12,11 +12,61 @@ import {
   Divider,
   Grid,
   GridItem,
+  HStack,
   Heading,
+  List,
+  ListItem,
+  Spacer,
   Spinner,
 } from '@chakra-ui/react';
 import { NextSeo } from 'next-seo';
+import NextLink from 'next/link';
 import React, { ReactElement } from 'react';
+
+function NavMenu() {
+  return (
+    <List w={'100%'}>
+      <ListItem w={'100%'} my={2}>
+        <HStack w={'100%'}>
+          <NextLink href={`/`} passHref>
+            <Button
+              as={'a'}
+              w={'100%'}
+              leftIcon={<>🏠</>}
+              bg={''}
+              _hover={{
+                bg: 'linkedin.100',
+                color: 'linkedin.600',
+              }}
+            >
+              Home
+              <Spacer />
+            </Button>
+          </NextLink>
+        </HStack>
+      </ListItem>
+      <ListItem w={'100%'} my={2}>
+        <HStack w={'100%'}>
+          <NextLink href={`/questions`} passHref>
+            <Button
+              as={'a'}
+              w={'100%'}
+              leftIcon={<>📝</>}
+              bg={'none'}
+              _hover={{
+                bg: 'linkedin.100',
+                color: 'linkedin.600',
+              }}
+            >
+              Questions
+              <Spacer />
+            </Button>
+          </NextLink>
+        </HStack>
+      </ListItem>
+    </List>
+  );
+}
 
 export default function questionsPage() {
   const { data, error, size, setSize } = useQuestions();
@@ -41,6 +91,7 @@ export default function questionsPage() {
       <Container flexGrow={1}>
         <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
           <GridItem colSpan={2}>
+            <NavMenu />
             <SearchTags />
           </GridItem>
           <GridItem colSpan={7}>

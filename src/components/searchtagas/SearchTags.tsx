@@ -1,108 +1,101 @@
+import { ITag } from '@/models/Tag';
 import {
   Box,
-  Button,
-  HStack,
+  Center,
   Heading,
-  Link,
-  List,
-  ListItem,
-  Spacer,
+  Input,
+  InputGroup,
+  InputRightElement,
   Tag,
   TagCloseButton,
   TagLabel,
   VStack,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
-import NextLink from 'next/link';
-import React from 'react';
-import { AiOutlineTag } from 'react-icons/ai';
+import React, { useEffect, useState } from 'react';
+import { BiSearch } from 'react-icons/bi';
 
 import { Container } from '../Container';
 
-const tags = ['TypeScript', 'Next.js', 'Node.js'];
-
 const SearchTags = () => {
+  const [suggestTags, setSuggestTags] = useState<ITag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/tags');
+      const data = await response.json();
+      setSuggestTags(data);
+    };
+    fetchData();
+    return () => {
+      fetchData();
+    };
+  }, []);
+
   return (
     <Container alignItems={'start'} p={'2'}>
-      <List w={'100%'}>
-        <ListItem w={'100%'} my={2}>
-          <HStack w={'100%'}>
-            <NextLink href={`/`} passHref>
-              <Button
-                as={'a'}
-                w={'100%'}
-                leftIcon={<>🏠</>}
-                bg={''}
-                _hover={{
-                  bg: 'linkedin.100',
-                  color: 'linkedin.600',
-                }}
-              >
-                Home
-                <Spacer />
-              </Button>
-            </NextLink>
-          </HStack>
-        </ListItem>
-        <ListItem w={'100%'} my={2}>
-          <HStack w={'100%'}>
-            <NextLink href={`/questions`} passHref>
-              <Button
-                as={'a'}
-                w={'100%'}
-                leftIcon={<>📝</>}
-                bg={'none'}
-                _hover={{
-                  bg: 'linkedin.100',
-                  color: 'linkedin.600',
-                }}
-              >
-                Questions
-                <Spacer />
-              </Button>
-            </NextLink>
-          </HStack>
-        </ListItem>
-      </List>
-
       <Box w={'100%'} p={'2'} mb={'4'}>
         <Heading mb={'4'} size={'md'}>
           Tags
         </Heading>
-        <Heading size={'sm'} mb={'2'}>
-          Algorithm
-        </Heading>
-        <VStack mb={'4'} alignItems={'start'}>
-          {tags.map((tag) => (
-            <Tag key={tag} w={'auto'} size={'md'} color={'blackAlpha.800'}>
-              <NextLink href={`/questions/${tag}`} passHref>
-                <Link _hover={{ textDecor: 'none' }}>
-                  <TagLabel _hover={{ color: 'blackAlpha.600' }}>
-                    {tag}
-                  </TagLabel>
-                </Link>
-              </NextLink>
-              <TagCloseButton />
-            </Tag>
-          ))}
-          <Heading size={'sm'} mb={'2'}>
-            Language
-          </Heading>
-          {tags.map((tag) => (
-            <Tag key={tag} w={'auto'} size={'md'} color={'blackAlpha.800'}>
-              <NextLink href={`/questions/${tag}`} passHref>
-                <Link _hover={{ textDecor: 'none' }}>
-                  <TagLabel _hover={{ color: 'blackAlpha.600' }}>
-                    {tag}
-                  </TagLabel>
-                </Link>
-              </NextLink>
-              <TagCloseButton />
-            </Tag>
-          ))}
-        </VStack>
-        <Button leftIcon={<AiOutlineTag />} colorScheme={'teal'} size={'sm'}>
-          Add Tags
-        </Button>
+        <Box
+          w={'100%'}
+          p={2}
+          border={'1px'}
+          borderColor={'blackAlpha.400'}
+          borderRadius={'md'}
+          bgColor={'white'}
+        >
+          <VStack w={'100%'} alignItems={'start'}>
+            {selectedTags &&
+              selectedTags.map((tag, i) => (
+                <WrapItem key={i}>
+                  <Tag
+                    size={'md'}
+                    colorScheme={'blackAlpha'}
+                    cursor={'pointer'}
+                    _hover={{ color: 'blackAlpha.600' }}
+                    onClick={() =>
+                      setSelectedTags((tags) => tags.filter((_, j) => i !== j))
+                    }
+                  >
+                    <TagLabel>{tag}</TagLabel>
+                    <TagCloseButton />
+                  </Tag>
+                </WrapItem>
+              ))}
+            <InputGroup>
+              <Input />
+              <InputRightElement color={'gray.400'}>
+                <BiSearch />
+              </InputRightElement>
+            </InputGroup>
+            {suggestTags.length ? (
+              <Box>
+                <Wrap>
+                  {suggestTags.map((tag, i) => (
+                    <WrapItem key={i}>
+                      <Tag
+                        size={'md'}
+                        cursor={'pointer'}
+                        _hover={{ color: 'blackAlpha.600' }}
+                        onClick={() =>
+                          setSelectedTags((tags) => [...tags, tag.tagId])
+                        }
+                      >
+                        <TagLabel>{tag.tagId}</TagLabel>
+                      </Tag>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </Box>
+            ) : (
+              <Center w={'100%'}>no tags...</Center>
+            )}
+          </VStack>
+        </Box>
       </Box>
     </Container>
   );
