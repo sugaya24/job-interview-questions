@@ -13,26 +13,45 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
+import { matchSorter } from 'match-sorter';
 import React, { useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 
 import { Container } from '../Container';
 
+const LIMIT_SUGGESTION_TAGS = 10;
+
 const SearchTags = () => {
   const [suggestTags, setSuggestTags] = useState<ITag[]>([]);
+  const [sortedTags, setSortedTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('/api/tags');
-      const data = await response.json();
+      const data = (await response.json()) as ITag[];
       setSuggestTags(data);
+      setSortedTags(
+        data.map((item) => item.tagId).slice(0, LIMIT_SUGGESTION_TAGS),
+      );
     };
     fetchData();
     return () => {
       fetchData();
     };
   }, []);
+
+  useEffect(() => {
+    const sorted = matchSorter(suggestTags, input, { keys: ['tagId'] })
+      .map((item) => item.tagId)
+      .slice(0, LIMIT_SUGGESTION_TAGS);
+    setSortedTags(sorted);
+  }, [input]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
 
   return (
     <Container alignItems={'start'} p={'2'}>
@@ -67,25 +86,33 @@ const SearchTags = () => {
                 </WrapItem>
               ))}
             <InputGroup>
-              <Input />
+              <Input value={input} onChange={(e) => onChange(e)} />
               <InputRightElement color={'gray.400'}>
                 <BiSearch />
               </InputRightElement>
             </InputGroup>
-            {suggestTags.length ? (
+            {sortedTags.length ? (
               <Box>
                 <Wrap>
-                  {suggestTags.map((tag, i) => (
+                  {sortedTags.map((tag, i) => (
                     <WrapItem key={i}>
                       <Tag
                         size={'md'}
                         cursor={'pointer'}
                         _hover={{ color: 'blackAlpha.600' }}
-                        onClick={() =>
-                          setSelectedTags((tags) => [...tags, tag.tagId])
-                        }
+                        onClick={() => {
+                          setSelectedTags((tags) => {
+                            const newTags = new Set(tags);
+                            newTags.add(tag);
+                            return Array.from(newTags);
+                          });
+                          setSortedTags((tags) =>
+                            tags.filter((t) => t !== tag),
+                          );
+                          setInput('');
+                        }}
                       >
-                        <TagLabel>{tag.tagId}</TagLabel>
+                        <TagLabel>{tag}</TagLabel>
                       </Tag>
                     </WrapItem>
                   ))}
