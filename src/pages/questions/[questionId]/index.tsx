@@ -47,12 +47,12 @@ const questionDetail = () => {
         title={data?.question.title}
         titleTemplate={'%s | Question Box'}
       />
-      <Container flex={'1 0 auto'}>
+      <Container flex={'1 0 auto'} px={4}>
         <Flex
-          w={'container.lg'}
+          w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
           my={8}
           py={8}
-          px={12}
+          px={{ base: 8, md: 12 }}
           flexDir={'column'}
           rounded={'2xl'}
           bgColor={'white'}

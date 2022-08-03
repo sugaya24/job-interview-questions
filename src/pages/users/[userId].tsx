@@ -28,13 +28,15 @@ const userProfile = () => {
   const { currentUser } = useAuthContext();
   const router = useRouter();
   const { userId } = router.query;
-  const { data, error } = useUser(Array.isArray(userId) ? userId[0] : userId);
+  const { data, error } = useUser(
+    Array.isArray(userId) ? userId[0] : userId || '',
+  );
 
   if (!data)
     return (
       <Container flexGrow={1}>
         <Flex
-          w={'container.lg'}
+          w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
           my={8}
           py={4}
           px={8}
@@ -56,10 +58,13 @@ const userProfile = () => {
 
   return (
     <>
-      <NextSeo title={user.username} titleTemplate={'%s | Question Box'} />
-      <Container flexGrow={1}>
+      <NextSeo
+        title={user.username || ''}
+        titleTemplate={'%s | Question Box'}
+      />
+      <Container mx={4} flexGrow={1}>
         <Flex
-          w={'container.lg'}
+          w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
           my={8}
           py={4}
           px={8}
@@ -72,7 +77,7 @@ const userProfile = () => {
         >
           <HStack>
             <Box>
-              <Avatar size={'xl'} src={user.photoURL} />
+              <Avatar size={'xl'} src={user.photoURL || ''} />
             </Box>
             <Heading>{user.username}</Heading>
             <Spacer />

@@ -35,8 +35,9 @@ const EditorBlock = (props: Props) => {
 
   return (
     <Box
-      w={'container.lg'}
+      w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
       h={'100%'}
+      px={4}
       flexGrow={1}
       display={'flex'}
       flexDir={'column'}

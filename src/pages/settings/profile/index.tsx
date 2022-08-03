@@ -40,9 +40,9 @@ const editProfile = () => {
 
   if (isLoading) {
     return (
-      <Container flexGrow={1}>
+      <Container flexGrow={1} mx={4}>
         <Flex
-          w={'container.md'}
+          w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
           my={8}
           py={8}
           px={8}
@@ -139,9 +139,9 @@ const editProfile = () => {
   }
 
   return (
-    <Container flexGrow={1}>
+    <Container flexGrow={1} mx={4}>
       <Flex
-        w={'container.md'}
+        w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
         my={8}
         py={8}
         px={8}
@@ -158,8 +158,8 @@ const editProfile = () => {
           flexDir={'column'}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Stack direction={'row'} gap={8}>
-            <VStack>
+          <Stack direction={{ base: 'column', md: 'row' }} gap={8} border="1px">
+            <VStack border={'1px'}>
               <Avatar
                 size={'xl'}
                 src={(currentUser && currentUser.photoURL) || ''}

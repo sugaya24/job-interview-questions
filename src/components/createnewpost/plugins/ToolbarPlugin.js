@@ -8,6 +8,8 @@ import {
   HStack,
   IconButton,
   VStack,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import {
   $createCodeNode,
@@ -662,7 +664,7 @@ export default function ToolbarPlugin() {
   }, [blockType]);
 
   return (
-    <Box
+    <Wrap
       className="toolbar"
       p={2}
       bgColor={'white'}
@@ -671,160 +673,175 @@ export default function ToolbarPlugin() {
       flexDir={'row'}
       borderRadius={'2xl'}
     >
-      <IconButton
-        variant={'none'}
-        disabled={!canUndo}
-        icon={<BiUndo />}
-        aria-label={'Undo'}
-        onClick={() => {
-          editor.dispatchCommand(UNDO_COMMAND);
-        }}
-      />
+      <WrapItem>
+        <IconButton
+          variant={'none'}
+          disabled={!canUndo}
+          icon={<BiUndo />}
+          aria-label={'Undo'}
+          onClick={() => {
+            editor.dispatchCommand(UNDO_COMMAND);
+          }}
+        />
 
-      <IconButton
-        variant={'none'}
-        disabled={!canRedo}
-        icon={<BiRedo />}
-        aria-label={'Redo'}
-        onClick={() => {
-          editor.dispatchCommand(REDO_COMMAND);
-        }}
-      />
+        <IconButton
+          variant={'none'}
+          disabled={!canRedo}
+          icon={<BiRedo />}
+          aria-label={'Redo'}
+          onClick={() => {
+            editor.dispatchCommand(REDO_COMMAND);
+          }}
+        />
+      </WrapItem>
       <Center>
         <Divider mx={2} orientation="vertical" />
       </Center>
-      {supportedBlockTypes.has(blockType) && (
-        <>
-          <Button
-            variant={'outline'}
-            leftIcon={currentBlockTypeIcon}
-            rightIcon={<RiArrowDropDownLine />}
-            bgColor={'white'}
-            onClick={() =>
-              setShowBlockOptionsDropDown(!showBlockOptionsDropDown)
-            }
-          >
-            {blockTypeToBlockName[blockType]}
-          </Button>
-          {showBlockOptionsDropDown &&
-            createPortal(
-              <BlockOptionsDropdownList
-                editor={editor}
-                blockType={blockType}
-                toolbarRef={toolbarRef}
-                setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
-              />,
-              document.body,
-            )}
-          <Center>
-            <Divider mx={2} orientation="vertical" />
-          </Center>
-        </>
-      )}
+      <WrapItem>
+        {supportedBlockTypes.has(blockType) && (
+          <>
+            <Button
+              variant={'outline'}
+              leftIcon={currentBlockTypeIcon}
+              rightIcon={<RiArrowDropDownLine />}
+              bgColor={'white'}
+              onClick={() =>
+                setShowBlockOptionsDropDown(!showBlockOptionsDropDown)
+              }
+            >
+              {blockTypeToBlockName[blockType]}
+            </Button>
+            {showBlockOptionsDropDown &&
+              createPortal(
+                <BlockOptionsDropdownList
+                  editor={editor}
+                  blockType={blockType}
+                  toolbarRef={toolbarRef}
+                  setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
+                />,
+                document.body,
+              )}
+          </>
+        )}
+      </WrapItem>
+      <Center>
+        <Divider mx={2} orientation="vertical" />
+      </Center>
       {blockType === 'code' ? (
-        <>
+        <WrapItem>
           <Select
             className="toolbar-item code-language"
             onChange={onCodeLanguageSelect}
             options={codeLanguges}
             value={codeLanguage}
           />
-        </>
+        </WrapItem>
       ) : (
-        <HStack>
-          <IconButton
-            variant={'outline'}
-            icon={<BiBold />}
-            bgColor={isBold ? 'gray.100' : 'white'}
-            aria-label={'Format Bold'}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-            }}
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiItalic />}
-            bgColor={isItalic ? 'gray.100' : 'white'}
-            aria-label={'Format Italics'}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-            }}
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiUnderline />}
-            bgColor={isUnderline ? 'gray.100' : 'white'}
-            aria-label={'Format Underline'}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-            }}
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiStrikethrough />}
-            bgColor={isStrikethrough ? 'gray.100' : 'white'}
-            aria-label={'Format Strikethrough'}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
-            }}
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiCode />}
-            bgColor={isCode ? 'gray.100' : 'white'}
-            aria-label={'Insert Code'}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
-            }}
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiLink />}
-            bgColor={isLink ? 'gray.100' : 'white'}
-            aria-label={'Insert Link'}
-            onClick={insertLink}
-          />
-          {isLink &&
-            createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
-          <Divider mx={2} orientation="vertical" />
-          <IconButton
-            variant={'outline'}
-            icon={<BiLeftIndent />}
-            bgColor={isLink ? 'gray.100' : 'white'}
-            aria-label={'Left Align'}
-            onClick={() =>
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')
-            }
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiAlignMiddle />}
-            bgColor={isLink ? 'gray.100' : 'white'}
-            aria-label={'Center Align'}
-            onClick={() =>
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')
-            }
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiRightIndent />}
-            bgColor={isLink ? 'gray.100' : 'white'}
-            aria-label={'Right Align'}
-            onClick={() =>
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')
-            }
-          />
-          <IconButton
-            variant={'outline'}
-            icon={<BiAlignJustify />}
-            bgColor={isLink ? 'gray.100' : 'white'}
-            aria-label={'Justify Align'}
-            onClick={() =>
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')
-            }
-          />
-        </HStack>
+        // <HStack>
+        <>
+          <WrapItem gap={2}>
+            <IconButton
+              variant={'outline'}
+              icon={<BiBold />}
+              bgColor={isBold ? 'gray.100' : 'white'}
+              aria-label={'Format Bold'}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+              }}
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiItalic />}
+              bgColor={isItalic ? 'gray.100' : 'white'}
+              aria-label={'Format Italics'}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+              }}
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiUnderline />}
+              bgColor={isUnderline ? 'gray.100' : 'white'}
+              aria-label={'Format Underline'}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+              }}
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiStrikethrough />}
+              bgColor={isStrikethrough ? 'gray.100' : 'white'}
+              aria-label={'Format Strikethrough'}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+              }}
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiCode />}
+              bgColor={isCode ? 'gray.100' : 'white'}
+              aria-label={'Insert Code'}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+              }}
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiLink />}
+              bgColor={isLink ? 'gray.100' : 'white'}
+              aria-label={'Insert Link'}
+              onClick={insertLink}
+              // not working properly yet
+              display={'none'}
+            />
+            {isLink &&
+              createPortal(
+                <FloatingLinkEditor editor={editor} />,
+                document.body,
+              )}
+            <Divider mx={2} orientation="vertical" />
+          </WrapItem>
+          <WrapItem gap={2}>
+            <IconButton
+              variant={'outline'}
+              icon={<BiLeftIndent />}
+              bgColor={isLink ? 'gray.100' : 'white'}
+              aria-label={'Left Align'}
+              onClick={() =>
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')
+              }
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiAlignMiddle />}
+              bgColor={isLink ? 'gray.100' : 'white'}
+              aria-label={'Center Align'}
+              onClick={() =>
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')
+              }
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiRightIndent />}
+              bgColor={isLink ? 'gray.100' : 'white'}
+              aria-label={'Right Align'}
+              onClick={() =>
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')
+              }
+            />
+            <IconButton
+              variant={'outline'}
+              icon={<BiAlignJustify />}
+              bgColor={isLink ? 'gray.100' : 'white'}
+              aria-label={'Justify Align'}
+              onClick={() =>
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')
+              }
+            />
+          </WrapItem>
+          {/* </HStack> */}
+        </>
       )}
-    </Box>
+    </Wrap>
   );
 }

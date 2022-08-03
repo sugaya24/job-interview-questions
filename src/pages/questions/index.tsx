@@ -117,15 +117,22 @@ export default function questionsPage() {
     <>
       <NextSeo title={'Question Box'} titleTemplate={'Questions List | %s'} />
       <Container flexGrow={1}>
-        <Grid w={`container.xl`} templateColumns="repeat(12, 1fr)" gap={4}>
-          <GridItem colSpan={2}>
+        <Grid
+          w={{ base: '100%', md: 'container.md', lg: `container.lg` }}
+          templateColumns={{ base: 'repeat(12, 1fr)' }}
+          gap={4}
+        >
+          <GridItem
+            display={{ base: 'none', md: 'block' }}
+            colSpan={{ base: 0, md: 3, lg: 2 }}
+          >
             <NavMenu />
             <SearchTags
               selectedTags={selectedTags}
               setSelectedTags={setSelectedTags}
             />
           </GridItem>
-          <GridItem colSpan={7}>
+          <GridItem px={4} colSpan={{ base: 12, md: 9, lg: 7 }}>
             <Heading>Questions</Heading>
             {isLoading ? (
               <Center my={4}>
@@ -135,7 +142,10 @@ export default function questionsPage() {
               <QuestionList selectedTags={selectedTags} />
             )}
           </GridItem>
-          <GridItem colSpan={3}>
+          <GridItem
+            display={{ base: 'none', lg: 'block' }}
+            colSpan={{ base: 0, lg: 3 }}
+          >
             <TrendingQuestions />
           </GridItem>
         </Grid>

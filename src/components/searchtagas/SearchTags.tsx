@@ -59,8 +59,8 @@ const SearchTags = (props: Props) => {
   };
 
   return (
-    <Container alignItems={'start'} p={'2'}>
-      <Box w={'100%'} p={'2'} mb={'4'}>
+    <Container alignItems={'start'}>
+      <Box w={'100%'} mb={'4'}>
         <Heading mb={'4'} size={'md'}>
           Tags
         </Heading>
