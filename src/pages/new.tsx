@@ -44,6 +44,7 @@ const createNewPost = () => {
       title: title,
       tags: tags,
       likes: [],
+      comments: [],
       author: {
         uid: currentUser?.uid!,
         name: currentUser?.username!,

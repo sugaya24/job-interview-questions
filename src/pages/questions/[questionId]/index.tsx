@@ -1,9 +1,13 @@
+import { User } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
+import { Editor } from '@/components/createnewpost';
+import { useAuthContext } from '@/contexts';
 import { useQuestion } from '@/hooks';
 import {
   Avatar,
   Box,
+  Button,
   Center,
   Divider,
   Flex,
@@ -18,11 +22,81 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
+import { EditorState } from 'lexical';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { BiEditAlt } from 'react-icons/bi';
+
+const CommentList = ({ comments }: { comments: any[] }) => {
+  return (
+    <Box w={{ base: '100%', md: 'container.md', lg: 'container.lg' }} mb={8}>
+      <Heading ml={4} py={2}>
+        Comment ({comments.length})
+      </Heading>
+      <Divider />
+    </Box>
+  );
+};
+
+const CommentEditor = ({ questionId }: { questionId: string }) => {
+  const { currentUser } = useAuthContext();
+  const [editorState, setEditorState] = useState<EditorState>();
+  const [hasContent, setHasContent] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
+
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  const postComment = async () => {
+    setIsPosting(true);
+    if (!currentUser) {
+      return;
+    }
+    const comment: {
+      currentUser: User;
+      editorState: string;
+      questionId: string;
+    } = {
+      currentUser: currentUser,
+      editorState: JSON.stringify(editorState),
+      questionId: questionId,
+    };
+    await fetch('/api/comments', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(comment),
+    });
+    sleep(3000).then(() => {
+      setIsPosting(false);
+    });
+  };
+
+  return (
+    <Box w={{ base: '100%', md: 'container.md', lg: 'container.lg' }} mb={8}>
+      <Box h={'300px'} mb={4}>
+        <Editor
+          onChange={(editorState: EditorState): void => {
+            editorState.read(() => {
+              setEditorState(editorState);
+              setHasContent(!(editorState?._nodeMap.size === 2) && !undefined);
+            });
+          }}
+          initialEditorState={undefined}
+        />
+      </Box>
+      <Button
+        colorScheme={'blue'}
+        isDisabled={!currentUser || isPosting || !hasContent}
+        isLoading={isPosting}
+        onClick={postComment}
+      >
+        Post
+      </Button>
+    </Box>
+  );
+};
 
 const questionDetail = () => {
   const router = useRouter();
@@ -115,11 +189,10 @@ const questionDetail = () => {
             ))}
           </HStack>
           <Divider mt={4} />
-          <Box p={4}>
-            {/* <Text>content text</Text> */}
-            {parse(data?.question?.content!)}
-          </Box>
+          <Box p={4}>{parse(data?.question?.content || '')}</Box>
         </Flex>
+        <CommentList comments={data?.question.comments || []} />
+        <CommentEditor questionId={questionId as string} />
       </Container>
     </>
   );

@@ -158,8 +158,8 @@ const editProfile = () => {
           flexDir={'column'}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Stack direction={{ base: 'column', md: 'row' }} gap={8} border="1px">
-            <VStack border={'1px'}>
+          <Stack direction={{ base: 'column', md: 'row' }} gap={8}>
+            <VStack>
               <Avatar
                 size={'xl'}
                 src={(currentUser && currentUser.photoURL) || ''}

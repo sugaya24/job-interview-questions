@@ -23,6 +23,12 @@ const questionSchema: Schema = new mongoose.Schema<QuestionDocument>(
     },
     tags: Array,
     likes: Array,
+    comments: [
+      {
+        userId: String,
+        editorState: String,
+      },
+    ],
     author: {
       name: {
         type: String,

@@ -5,6 +5,10 @@ export type Question = {
   editorState: string;
   tags: string[];
   likes: string[];
+  comments: {
+    userId: string;
+    editorState: string;
+  }[];
   author: {
     name: string;
     avatar: string;
