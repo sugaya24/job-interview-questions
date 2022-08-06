@@ -29,8 +29,59 @@ import { EditorState, LexicalEditor } from 'lexical';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { BiEditAlt } from 'react-icons/bi';
+
+const CommentCard = ({
+  htmlString,
+  userId,
+}: {
+  userId: string;
+  htmlString: string;
+}) => {
+  const content = parse(htmlString);
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/users/${userId}`);
+      const data = await response.json();
+      setUser(data.user);
+    };
+    fetchData();
+    return () => {
+      fetchData();
+    };
+  }, []);
+  return (
+    <Flex
+      w={'100%'}
+      gap={2}
+      border={'1px'}
+      borderColor={'blackAlpha.400'}
+      borderRadius={'2xl'}
+      bgColor={'white'}
+    >
+      <Flex p={4}>
+        <NextLink href={''}>
+          <Link _hover={{ textDecor: 'none', color: 'blackAlpha.600' }}>
+            <Avatar src={user?.photoURL || ''} />
+          </Link>
+        </NextLink>
+      </Flex>
+      <Flex w={'100%'} flexDir={'column'} py={4} pr={4}>
+        <Flex w={'100%'}>
+          <Heading size={'md'} mb={8}>
+            {user?.username}
+          </Heading>
+          <Spacer />
+          <Text color={'blackAlpha.400'}>{}</Text>
+        </Flex>
+        <Box>{content}</Box>
+      </Flex>
+    </Flex>
+  );
+};
 
 const CommentList = ({
   comments,
@@ -43,10 +94,15 @@ const CommentList = ({
         Comment ({comments.length})
       </Heading>
       <Divider />
-      <Box>
-        <List>
+      <Box w={'100%'}>
+        <List spacing={4} w={'100%'}>
           {comments.map((comment, i) => (
-            <ListItem key={i}>{parse(comment.htmlString)}</ListItem>
+            <ListItem key={i} w={'100%'}>
+              <CommentCard
+                userId={comment.userId}
+                htmlString={comment.htmlString}
+              />
+            </ListItem>
           ))}
         </List>
       </Box>
