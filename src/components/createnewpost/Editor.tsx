@@ -4,6 +4,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { TRANSFORMERS } from '@lexical/markdown';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -47,7 +48,7 @@ function Placeholder() {
   );
 }
 
-const editorConfig = {
+export const editorConfig = {
   // The editor theme
   theme: customTheme,
   // Handling of errors during update
@@ -122,3 +123,49 @@ export default function Editor({ onChange, initialEditorState }: Props) {
     </LexicalComposer>
   );
 }
+
+export const EditorInner = ({ onChange, initialEditorState }: Props) => {
+  return (
+    <Box
+      className="editor-container"
+      h={'100%'}
+      w={'100%'}
+      flexGrow={1}
+      display={'flex'}
+      flexDir={'column'}
+      border={'1px'}
+      borderColor={'blackAlpha.400'}
+      borderRadius={'2xl'}
+    >
+      <ToolbarPlugin />
+      <Divider />
+      <Box
+        className="editor-inner"
+        w={'100%'}
+        flexGrow={1}
+        flexBasis={0}
+        pos={'relative'}
+        flexWrap={'nowrap'}
+        overflowY={'auto'}
+        bgColor={'white'}
+        borderBottomRadius={'2xl'}
+      >
+        <RichTextPlugin
+          contentEditable={<ContentEditable className="editor-input" />}
+          placeholder={<Placeholder />}
+          initialEditorState={initialEditorState}
+        />
+        <OnChangePlugin onChange={onChange} />
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+        <CodeHighlightPlugin />
+        <ListPlugin />
+        <LinkPlugin />
+        <AutoLinkPlugin />
+        <ListMaxIndentLevelPlugin maxDepth={7} />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        <ClearEditorPlugin />
+      </Box>
+    </Box>
+  );
+};

@@ -1,7 +1,7 @@
 import { User } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
-import { Editor } from '@/components/createnewpost';
+import { EditorInner, editorConfig } from '@/components/createnewpost/Editor';
 import { useAuthContext } from '@/contexts';
 import { useQuestion } from '@/hooks';
 import {
@@ -23,9 +23,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { $generateHtmlFromNodes } from '@lexical/html';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
-import { EditorState, LexicalEditor } from 'lexical';
+import { CLEAR_EDITOR_COMMAND, EditorState, LexicalEditor } from 'lexical';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -110,6 +112,32 @@ const CommentList = ({
   );
 };
 
+type PostCommentPluginProps = {
+  currentUser: User | null | undefined;
+  isPosting: boolean;
+  hasContent: boolean;
+  postComment: () => Promise<void>;
+};
+const PostCommentPlugin = (props: PostCommentPluginProps) => {
+  const { currentUser, isPosting, hasContent, postComment } = props;
+  const [editor] = useLexicalComposerContext();
+  return (
+    <Box w={'100%'} h={'auto'}>
+      <Button
+        colorScheme={'blue'}
+        isDisabled={!currentUser || isPosting || !hasContent}
+        isLoading={isPosting}
+        onClick={() => {
+          postComment();
+          editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+        }}
+      >
+        Post
+      </Button>
+    </Box>
+  );
+};
+
 const CommentEditor = ({ questionId }: { questionId: string }) => {
   const { currentUser } = useAuthContext();
   const { mutate } = useQuestion(questionId);
@@ -149,29 +177,38 @@ const CommentEditor = ({ questionId }: { questionId: string }) => {
   };
 
   return (
-    <Box w={{ base: '100%', md: 'container.md', lg: 'container.lg' }} mb={8}>
-      <Box h={'300px'} mb={4}>
-        <Editor
-          onChange={(editorState: EditorState, editor: LexicalEditor): void => {
-            editorState.read(() => {
-              setEditorState(editorState);
-              setHasContent(!(editorState?._nodeMap.size === 2) && !undefined);
-            });
-            editor.update(() => {
-              setHtmlString($generateHtmlFromNodes(editor));
-            });
-          }}
-          initialEditorState={undefined}
+    <Box
+      w={{ base: '100%', md: 'container.md', lg: 'container.lg' }}
+      h={'100%'}
+      pb={8}
+    >
+      <LexicalComposer initialConfig={editorConfig}>
+        <Box h={'300px'} mb={8}>
+          <EditorInner
+            onChange={(
+              editorState: EditorState,
+              editor: LexicalEditor,
+            ): void => {
+              editorState.read(() => {
+                setEditorState(editorState);
+                setHasContent(
+                  !(editorState?._nodeMap.size === 2) && !undefined,
+                );
+              });
+              editor.update(() => {
+                setHtmlString($generateHtmlFromNodes(editor));
+              });
+            }}
+            initialEditorState={undefined}
+          />
+        </Box>
+        <PostCommentPlugin
+          currentUser={currentUser}
+          isPosting={isPosting}
+          hasContent={hasContent}
+          postComment={postComment}
         />
-      </Box>
-      <Button
-        colorScheme={'blue'}
-        isDisabled={!currentUser || isPosting || !hasContent}
-        isLoading={isPosting}
-        onClick={postComment}
-      >
-        Post
-      </Button>
+      </LexicalComposer>
     </Box>
   );
 };

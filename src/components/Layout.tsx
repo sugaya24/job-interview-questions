@@ -6,7 +6,7 @@ import Navbar from './Navbar';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <Box h={'100vh'} display={'flex'} flexDir={'column'}>
+    <Box minH={'100vh'} h={'100%'} display={'flex'} flexDir={'column'}>
       <Navbar />
       {children}
       <Footer top={'100%'} pos={'sticky'} bg={theme.colors.gray[50]} />
