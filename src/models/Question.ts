@@ -27,6 +27,7 @@ const questionSchema: Schema = new mongoose.Schema<QuestionDocument>(
       {
         userId: String,
         editorState: String,
+        htmlString: String,
       },
     ],
     author: {

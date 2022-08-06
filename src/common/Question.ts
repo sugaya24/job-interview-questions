@@ -8,6 +8,7 @@ export type Question = {
   comments: {
     userId: string;
     editorState: string;
+    htmlString: string;
   }[];
   author: {
     name: string;

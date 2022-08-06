@@ -15,34 +15,50 @@ import {
   Heading,
   IconButton,
   Link,
+  List,
+  ListItem,
   Spacer,
   Spinner,
   Tag,
   Text,
 } from '@chakra-ui/react';
+import { $generateHtmlFromNodes } from '@lexical/html';
 import { format } from 'date-fns';
 import parse from 'html-react-parser';
-import { EditorState } from 'lexical';
+import { EditorState, LexicalEditor } from 'lexical';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
 import { BiEditAlt } from 'react-icons/bi';
 
-const CommentList = ({ comments }: { comments: any[] }) => {
+const CommentList = ({
+  comments,
+}: {
+  comments: { userId: string; editorState: string; htmlString: string }[];
+}) => {
   return (
     <Box w={{ base: '100%', md: 'container.md', lg: 'container.lg' }} mb={8}>
       <Heading ml={4} py={2}>
         Comment ({comments.length})
       </Heading>
       <Divider />
+      <Box>
+        <List>
+          {comments.map((comment, i) => (
+            <ListItem key={i}>{parse(comment.htmlString)}</ListItem>
+          ))}
+        </List>
+      </Box>
     </Box>
   );
 };
 
 const CommentEditor = ({ questionId }: { questionId: string }) => {
   const { currentUser } = useAuthContext();
+  const { mutate } = useQuestion(questionId);
   const [editorState, setEditorState] = useState<EditorState>();
+  const [htmlString, setHtmlString] = useState('');
   const [hasContent, setHasContent] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
 
@@ -58,10 +74,12 @@ const CommentEditor = ({ questionId }: { questionId: string }) => {
       currentUser: User;
       editorState: string;
       questionId: string;
+      htmlString: string;
     } = {
       currentUser: currentUser,
       editorState: JSON.stringify(editorState),
       questionId: questionId,
+      htmlString: htmlString,
     };
     await fetch('/api/comments', {
       method: 'POST',
@@ -70,6 +88,7 @@ const CommentEditor = ({ questionId }: { questionId: string }) => {
     });
     sleep(3000).then(() => {
       setIsPosting(false);
+      mutate();
     });
   };
 
@@ -77,10 +96,13 @@ const CommentEditor = ({ questionId }: { questionId: string }) => {
     <Box w={{ base: '100%', md: 'container.md', lg: 'container.lg' }} mb={8}>
       <Box h={'300px'} mb={4}>
         <Editor
-          onChange={(editorState: EditorState): void => {
+          onChange={(editorState: EditorState, editor: LexicalEditor): void => {
             editorState.read(() => {
               setEditorState(editorState);
               setHasContent(!(editorState?._nodeMap.size === 2) && !undefined);
+            });
+            editor.update(() => {
+              setHtmlString($generateHtmlFromNodes(editor));
             });
           }}
           initialEditorState={undefined}
