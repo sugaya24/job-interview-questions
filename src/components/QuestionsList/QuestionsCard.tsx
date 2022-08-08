@@ -53,6 +53,14 @@ const QuestionsCard = (props: Props) => {
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    if (data?.user.bookmarks) {
+      setIsBookmarked(data?.user.bookmarks.includes(question.questionId));
+    } else {
+      setIsBookmarked(false);
+    }
+  }, [data]);
+
   const handleLike = async () => {
     setIsLiked(!isLiked);
     if (likes.includes(currentUser?.uid!)) {
@@ -80,8 +88,27 @@ const QuestionsCard = (props: Props) => {
     }
   };
 
-  const handleBookmark = () => {
+  const handleBookmark = async ({
+    uid,
+    questionId,
+  }: {
+    uid: string | null | undefined;
+    questionId: string;
+  }) => {
+    if (!uid) {
+      return;
+    }
     setIsBookmarked(!isBookmarked);
+    if (!isBookmarked) {
+      await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId: questionId }),
+      });
+    } else {
+      // deleteBookmarks
+      // await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {})
+    }
   };
 
   return (
@@ -168,7 +195,12 @@ const QuestionsCard = (props: Props) => {
               variant={'none'}
               aria-label={isBookmarked ? 'Fill Bookmark' : 'Bookmark Outline'}
               icon={isBookmarked ? <BsFillBookmarkCheckFill /> : <BsBookmark />}
-              onClick={handleBookmark}
+              onClick={() =>
+                handleBookmark({
+                  uid: data?.user.uid,
+                  questionId: question.questionId,
+                })
+              }
             />
           </HStack>
         </HStack>

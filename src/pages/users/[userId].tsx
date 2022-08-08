@@ -10,6 +10,8 @@ import {
   Flex,
   HStack,
   Heading,
+  List,
+  ListItem,
   Spacer,
   Spinner,
   Tab,
@@ -23,6 +25,18 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import { BiEdit } from 'react-icons/bi';
+
+const BookmarkList = ({ bookmarks }: { bookmarks: string[] }) => {
+  return (
+    <>
+      <List>
+        {bookmarks.map((questionId, i) => (
+          <ListItem key={i}>{questionId}</ListItem>
+        ))}
+      </List>
+    </>
+  );
+};
 
 const userProfile = () => {
   const { currentUser } = useAuthContext();
@@ -108,7 +122,11 @@ const userProfile = () => {
                 <Heading fontSize={'lg'}>No questions yet</Heading>
               </TabPanel>
               <TabPanel>
-                <Heading fontSize={'lg'}>No saved questions yet</Heading>
+                {data.user.bookmarks.length ? (
+                  <BookmarkList bookmarks={data.user.bookmarks} />
+                ) : (
+                  <Heading fontSize={'lg'}>No saved questions yet</Heading>
+                )}
               </TabPanel>
               <TabPanel>
                 <Heading fontSize={'lg'}>No Follows yet</Heading>
