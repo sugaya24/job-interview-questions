@@ -82,27 +82,21 @@ const QuestionsCard = (props: Props) => {
     }
   };
 
-  const handleBookmark = async ({
-    uid,
-    questionId,
-  }: {
-    uid: string | null | undefined;
-    questionId: string;
-  }) => {
-    if (!uid) {
+  const handleBookmark = async ({ questionId }: { questionId: string }) => {
+    if (!currentUser?.uid) {
       return;
     }
     setIsBookmarked(!isBookmarked);
     // add bookmark
     if (!isBookmarked) {
-      await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {
+      await fetch(`/api/users/${currentUser.uid}/bookmarks/${questionId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ questionId: questionId }),
       });
     } else {
       // delete bookmark
-      await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {
+      await fetch(`/api/users/${currentUser.uid}/bookmarks/${questionId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ questionId: questionId }),
@@ -196,7 +190,6 @@ const QuestionsCard = (props: Props) => {
               icon={isBookmarked ? <BsFillBookmarkCheckFill /> : <BsBookmark />}
               onClick={() =>
                 handleBookmark({
-                  uid: data?.user.uid,
                   questionId: question.questionId,
                 })
               }
