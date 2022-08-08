@@ -6,10 +6,14 @@ export default async function addBookmarks(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const filterQuery: FilterQuery<IUser> = { uid: req.query.uid };
-  const updateQuery: UpdateQuery<IUser> = {
-    $addToSet: { bookmarks: req.query.questionId },
-  };
-  const updatedUser = await User.findOneAndUpdate(filterQuery, updateQuery);
-  res.status(200).json(updatedUser);
+  try {
+    const filterQuery: FilterQuery<IUser> = { uid: req.query.uid };
+    const updateQuery: UpdateQuery<IUser> = {
+      $addToSet: { bookmarks: req.query.questionId },
+    };
+    const updatedUser = await User.findOneAndUpdate(filterQuery, updateQuery);
+    res.status(200).json(updatedUser);
+  } catch {
+    res.status(400).json({ message: 'Error has occurred.' });
+  }
 }

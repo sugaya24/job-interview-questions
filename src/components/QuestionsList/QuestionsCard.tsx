@@ -99,6 +99,7 @@ const QuestionsCard = (props: Props) => {
       return;
     }
     setIsBookmarked(!isBookmarked);
+    // add bookmark
     if (!isBookmarked) {
       await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {
         method: 'PUT',
@@ -106,8 +107,12 @@ const QuestionsCard = (props: Props) => {
         body: JSON.stringify({ questionId: questionId }),
       });
     } else {
-      // deleteBookmarks
-      // await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {})
+      // delete bookmark
+      await fetch(`/api/users/${uid}/bookmarks/${questionId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questionId: questionId }),
+      });
     }
   };
 
