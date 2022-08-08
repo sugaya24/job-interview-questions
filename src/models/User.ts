@@ -25,6 +25,9 @@ const userSchema: Schema = new mongoose.Schema(
     twitter: {
       type: String,
     },
+    bookmarks: {
+      type: Array,
+    },
   },
   { timestamps: true },
 );

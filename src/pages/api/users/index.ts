@@ -28,6 +28,7 @@ export default async function authHandler(
           photoURL: photoURL,
           github: '',
           twitter: '',
+          bookmarks: [],
         });
         res.status(201).json({ success: true, user });
       } catch (error: any) {

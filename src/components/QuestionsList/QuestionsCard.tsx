@@ -94,7 +94,7 @@ const QuestionsCard = (props: Props) => {
       align={'start'}
       {...styleProps}
     >
-      <Avatar src={data?.user.photoURL || ''} />
+      <Avatar src={data?.user?.photoURL || ''} />
       <Stack w={'100%'} direction={'column'} spacing={2} fontSize={'sm'}>
         <HStack className={'top-part'}>
           <NextLink href={`/users/${question.author.uid}`} passHref>
@@ -104,7 +104,9 @@ const QuestionsCard = (props: Props) => {
                 color: 'blackAlpha.600',
               }}
             >
-              <Text fontWeight={600}>{data?.user.username}</Text>
+              <Text fontWeight={600}>
+                {data?.user?.username || 'user deleted'}
+              </Text>
             </Link>
           </NextLink>
           <Spacer />
