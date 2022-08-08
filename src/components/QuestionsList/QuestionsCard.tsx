@@ -48,18 +48,12 @@ const QuestionsCard = (props: Props) => {
   useEffect(() => {
     if (!currentUser) {
       setIsLiked(false);
+      setIsBookmarked(false);
     } else {
       setIsLiked(likes.includes(currentUser?.uid!));
+      setIsBookmarked(currentUser.bookmarks.includes(question.questionId));
     }
   }, [currentUser]);
-
-  useEffect(() => {
-    if (data?.user.bookmarks) {
-      setIsBookmarked(data?.user.bookmarks.includes(question.questionId));
-    } else {
-      setIsBookmarked(false);
-    }
-  }, [data]);
 
   const handleLike = async () => {
     setIsLiked(!isLiked);
