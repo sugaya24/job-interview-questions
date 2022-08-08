@@ -1,17 +1,21 @@
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { useAuthContext } from '@/contexts';
+import { useQuestion } from '@/hooks';
 import { useUser } from '@/hooks/useUser';
 import {
   Avatar,
   Box,
   Button,
   Center,
+  Divider,
   Flex,
   HStack,
   Heading,
   List,
   ListItem,
+  SkeletonCircle,
+  SkeletonText,
   Spacer,
   Spinner,
   Tab,
@@ -19,23 +23,67 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
-import { BiEdit } from 'react-icons/bi';
+import { BiEdit, BiLike } from 'react-icons/bi';
 
 const BookmarkList = ({ bookmarks }: { bookmarks: string[] }) => {
   return (
     <>
       <List>
         {bookmarks.map((questionId, i) => (
-          <ListItem key={i}>{questionId}</ListItem>
+          <>
+            <BookmarkListItem key={i} questionId={questionId} />
+            <Divider />
+          </>
         ))}
       </List>
     </>
   );
+};
+
+const BookmarkListItem = ({ questionId }: { questionId: string }) => {
+  const { data, error } = useQuestion(questionId);
+  const isLoading = !data && !error;
+
+  const Item = () => {
+    if (isLoading) {
+      return (
+        <Box padding="6">
+          <SkeletonCircle size="10" />
+          <SkeletonText mt="4" noOfLines={2} spacing="4" />
+        </Box>
+      );
+    } else {
+      return (
+        <Box padding="6">
+          <HStack>
+            <Avatar size={'sm'} src={data?.question.author.avatar} />
+            <Heading size={'sm'}>{data?.question.author.name}</Heading>
+          </HStack>
+          <Heading>{data?.question.title}</Heading>
+          <HStack gap={4} color={'GrayText'}>
+            <Text size={'sm'}>
+              posted at:{' '}
+              {data?.question.createdAt &&
+                format(new Date(data?.question.createdAt), 'MMM dd, yyyy')}
+            </Text>
+            <HStack>
+              <BiLike />
+              <Text>{data?.question.likes.length}</Text>
+            </HStack>
+          </HStack>
+        </Box>
+      );
+    }
+  };
+
+  return <ListItem>{Item()}</ListItem>;
 };
 
 const userProfile = () => {
