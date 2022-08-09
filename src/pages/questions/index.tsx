@@ -2,7 +2,6 @@ import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { QuestionsCard } from '@/components/QuestionsList';
 import { QuestionDoc } from '@/components/QuestionsList/QuestionsCard';
-import { TrendingQuestions } from '@/components/TrendingQuestions';
 import { SearchTags } from '@/components/searchtagas';
 import { LIMIT_DISPLAY_CONTENT_PER_PAGE } from '@/constant';
 import { useQuestions } from '@/hooks';
@@ -124,7 +123,7 @@ export default function questionsPage() {
         >
           <GridItem
             display={{ base: 'none', md: 'block' }}
-            colSpan={{ base: 0, md: 3, lg: 2 }}
+            colSpan={{ base: 0, md: 3 }}
           >
             <NavMenu />
             <SearchTags
@@ -132,7 +131,7 @@ export default function questionsPage() {
               setSelectedTags={setSelectedTags}
             />
           </GridItem>
-          <GridItem px={4} colSpan={{ base: 12, md: 9, lg: 7 }}>
+          <GridItem px={4} colSpan={{ base: 12, md: 9 }}>
             <Heading>Questions</Heading>
             {isLoading ? (
               <Center my={4}>
@@ -141,12 +140,6 @@ export default function questionsPage() {
             ) : (
               <QuestionList selectedTags={selectedTags} />
             )}
-          </GridItem>
-          <GridItem
-            display={{ base: 'none', lg: 'block' }}
-            colSpan={{ base: 0, lg: 3 }}
-          >
-            <TrendingQuestions />
           </GridItem>
         </Grid>
       </Container>
