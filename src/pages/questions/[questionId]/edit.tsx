@@ -30,8 +30,22 @@ const editPage = () => {
   const [hasContent, setHasContent] = useState<boolean>(false);
   const editor = createEditor();
 
+  const protectPage = async (
+    currentUserUid: string,
+    authorUid: string,
+  ): Promise<boolean> => {
+    if (currentUserUid !== authorUid) {
+      router.replace('/questions');
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
-    if (!router.isReady) {
+    if (currentUser === null) {
+      router.replace('/questions');
+    }
+    if (!router.isReady || !currentUser) {
       return;
     }
     const reqController = new AbortController();
@@ -43,11 +57,17 @@ const editPage = () => {
         const data: { success: boolean; question: QuestionDocument } =
           await res.json();
         const { question } = data;
-        setQuestion(question);
-        setTitle(question.title);
-        setTags(question.tags);
-        setEditorState(editor.parseEditorState(question.editorState!));
-        setIsLoading(false);
+        const resProtectPage = await protectPage(
+          currentUser?.uid!,
+          question.author.uid,
+        );
+        if (resProtectPage) {
+          setQuestion(question);
+          setTitle(question.title);
+          setTags(question.tags);
+          setEditorState(editor.parseEditorState(question.editorState!));
+          setIsLoading(false);
+        }
       } catch {
         console.log('fetch error');
       }
@@ -57,7 +77,7 @@ const editPage = () => {
     return () => {
       fetchQuestion();
     };
-  }, [router]);
+  }, [router, currentUser]);
 
   if (isLoading) {
     return (

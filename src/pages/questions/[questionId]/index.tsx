@@ -215,6 +215,7 @@ const CommentEditor = ({ questionId }: { questionId: string }) => {
 
 const questionDetail = () => {
   const router = useRouter();
+  const { currentUser } = useAuthContext();
   const { questionId } = router.query;
   const { data, error, isLoading } = useQuestion(
     typeof questionId === 'string' ? questionId : '',
@@ -268,13 +269,15 @@ const questionDetail = () => {
             </NextLink>
             <Spacer />
             <HStack>
-              <NextLink href={`/questions/${data?.question.questionId}/edit`}>
-                <IconButton
-                  aria-label={'edit'}
-                  variant={'outline'}
-                  icon={<BiEditAlt />}
-                />
-              </NextLink>
+              {currentUser?.uid === data?.question.author.uid && (
+                <NextLink href={`/questions/${data?.question.questionId}/edit`}>
+                  <IconButton
+                    aria-label={'edit'}
+                    variant={'outline'}
+                    icon={<BiEditAlt />}
+                  />
+                </NextLink>
+              )}
               <Text color={'gray.500'}>
                 posted at{' '}
                 {format(new Date(data?.question?.createdAt!), 'MMM dd, yyyy')}
