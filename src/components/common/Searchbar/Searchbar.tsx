@@ -1,28 +1,47 @@
-import { Box, Button, Kbd, Spacer, StyleProps } from '@chakra-ui/react';
-import React from 'react';
+import {
+  FormControl,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Kbd,
+  StyleProps,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 
-const Searchbar = (props: StyleProps) => {
+function Searchbar(props: StyleProps) {
+  const router = useRouter();
+  const [value, setValue] = useState('');
+
   return (
-    <Button
-      w={`100%`}
-      bgColor={`white`}
-      shadow={`base`}
-      color={`gray.400`}
-      fontWeight={`normal`}
-      leftIcon={<BiSearch />}
-      rightIcon={
-        <Box display={{ base: `none`, md: `block` }}>
-          <Kbd>⌘</Kbd> <Kbd>K</Kbd>
-        </Box>
-      }
-      _hover={{ backgroundColor: `white` }}
-      {...props}
-    >
-      Search
-      <Spacer />
-    </Button>
+    <FormControl {...props}>
+      <InputGroup>
+        <InputLeftElement color={'gray.400'}>
+          <BiSearch />
+        </InputLeftElement>
+        <Input
+          type={'text'}
+          bgColor={'white'}
+          color={'blackAlpha.800'}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.code === 'Enter') {
+              router.push({
+                query: { ...router.query, q: encodeURI(value) },
+              });
+              // setValue('');
+            }
+          }}
+        />
+        <InputRightElement>
+          <Kbd color={'blackAlpha.600'}>/</Kbd>
+        </InputRightElement>
+      </InputGroup>
+    </FormControl>
   );
-};
+}
 
 export default Searchbar;

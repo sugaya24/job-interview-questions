@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
 
 function NavMenu() {
@@ -69,11 +70,15 @@ function NavMenu() {
 }
 
 type QuestionListProps = {
-  selectedTags: string[];
+  data: any[] | undefined;
+  size: number;
+  setSize: (
+    size: number | ((_size: number) => number),
+  ) => Promise<any[] | undefined>;
+  error: any;
 };
 const QuestionList = (props: QuestionListProps) => {
-  const { selectedTags } = props;
-  const { data, error, size, setSize } = useQuestions(selectedTags);
+  const { data, size, setSize, error } = props;
 
   const questions: QuestionDoc[] = data ? [].concat(...data) : [];
   const isLoading =
@@ -105,8 +110,9 @@ const QuestionList = (props: QuestionListProps) => {
 };
 
 export default function questionsPage() {
+  const router = useRouter();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { data, error, size } = useQuestions(selectedTags);
+  const { data, error, size, setSize } = useQuestions(router.query);
 
   if (error) return `An error has occurred. => ${error.message}`;
 
@@ -138,7 +144,12 @@ export default function questionsPage() {
                 <Spinner />
               </Center>
             ) : (
-              <QuestionList selectedTags={selectedTags} />
+              <QuestionList
+                data={data}
+                error={error}
+                size={size}
+                setSize={setSize}
+              />
             )}
           </GridItem>
         </Grid>

@@ -1,13 +1,11 @@
+import { ParsedUrlQuery, encode } from 'querystring';
 import useSWRInfinite from 'swr/infinite';
 
-export const useQuestions = (tags?: string[] | undefined) => {
+export const useQuestions = (query?: ParsedUrlQuery) => {
+  const q = new URLSearchParams(encode(query)).toString();
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json());
   const { data, error, mutate, size, setSize } = useSWRInfinite(
-    (index) =>
-      tags
-        ? `/api/questions?page=${index + 1}&` +
-          new URLSearchParams(tags.map((tag) => ['tag', tag])).toString()
-        : `/api/questions?page=${index + 1}`,
+    (index) => `/api/questions?page=${index + 1}&=${q}`,
     fetcher,
     {
       revalidateOnFocus: false,

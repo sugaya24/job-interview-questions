@@ -14,6 +14,7 @@ import {
   WrapItem,
 } from '@chakra-ui/react';
 import { matchSorter } from 'match-sorter';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 
@@ -28,6 +29,7 @@ type Props = {
 
 const SearchTags = (props: Props) => {
   const { selectedTags, setSelectedTags } = props;
+  const router = useRouter();
   const [suggestTags, setSuggestTags] = useState<ITag[]>([]);
   const [sortedTags, setSortedTags] = useState<string[]>([]);
   const [input, setInput] = useState('');
@@ -53,6 +55,12 @@ const SearchTags = (props: Props) => {
       .slice(0, LIMIT_SUGGESTION_TAGS);
     setSortedTags(sorted);
   }, [input]);
+
+  useEffect(() => {
+    router.push({
+      query: { ...router.query, tags: selectedTags },
+    });
+  }, [selectedTags]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -81,12 +89,15 @@ const SearchTags = (props: Props) => {
                     colorScheme={'blackAlpha'}
                     cursor={'pointer'}
                     _hover={{ color: 'blackAlpha.600' }}
-                    onClick={() =>
-                      setSelectedTags((tags) => tags.filter((_, j) => i !== j))
-                    }
                   >
                     <TagLabel>{tag}</TagLabel>
-                    <TagCloseButton />
+                    <TagCloseButton
+                      onClick={() =>
+                        setSelectedTags((tags) =>
+                          tags.filter((_, j) => i !== j),
+                        )
+                      }
+                    />
                   </Tag>
                 </WrapItem>
               ))}

@@ -21,16 +21,28 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           res.status(400).end();
           return;
         }
-        const query: FilterQuery<QuestionDocument> = req.query.tag
+        const titleQuery = req.query.q
           ? {
-              tags: {
-                $in:
-                  typeof req.query.tag === 'string'
-                    ? [req.query.tag]
-                    : req.query.tag,
+              title: {
+                $regex: '.*' + req.query.q + '.*',
+                $options: 'i',
               },
             }
           : {};
+        const tagsQuery = req.query.tags
+          ? typeof req.query.tags === 'string'
+            ? {
+                tags: req.query.tags,
+              }
+            : {
+                $and: req.query.tags.map((tag) => {
+                  return { tags: tag };
+                }),
+              }
+          : {};
+        const filterQuery: FilterQuery<QuestionDocument> = {
+          $and: [titleQuery, tagsQuery],
+        };
         const options: PaginateOptions = {
           pagination: true,
           limit: LIMIT_DISPLAY_CONTENT_PER_PAGE,
@@ -41,7 +53,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           QuestionDocument & {
             _id: ObjectId;
           }
-        > = await Question.paginate(query, options);
+        > = await Question.paginate(filterQuery, options);
         const questions = result.docs.map(
           (
             doc: QuestionDocument & {
