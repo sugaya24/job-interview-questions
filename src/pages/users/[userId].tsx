@@ -1,3 +1,4 @@
+import { Question } from '@/common';
 import { Container } from '@/components/Container';
 import Layout from '@/components/Layout';
 import { useAuthContext } from '@/contexts';
@@ -29,7 +30,7 @@ import { format } from 'date-fns';
 import { NextSeo } from 'next-seo';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { BiEdit, BiLike } from 'react-icons/bi';
 
 const BookmarkList = ({ bookmarks }: { bookmarks: string[] }) => {
@@ -47,6 +48,43 @@ const BookmarkList = ({ bookmarks }: { bookmarks: string[] }) => {
   );
 };
 
+const UsersQuestionsList = ({
+  usersQuestions,
+}: {
+  usersQuestions: (Question & {
+    createdAt: Date;
+    updatedAt: Date;
+  })[];
+}) => {
+  return (
+    <List>
+      {usersQuestions.map((question) => (
+        <Box key={question.questionId}>
+          <Box p={6}>
+            <HStack>
+              <Avatar size={'sm'} src={question.author.avatar} />
+              <Heading size={'sm'}>{question.author.name}</Heading>
+            </HStack>
+            <Heading>{question.title}</Heading>
+            <HStack gap={4} color={'GrayText'}>
+              <Text size={'sm'}>
+                posted at:{' '}
+                {question.createdAt &&
+                  format(new Date(question.createdAt), 'MMM dd, yyyy')}
+              </Text>
+              <HStack>
+                <BiLike />
+                <Text>{question.likes.length}</Text>
+              </HStack>
+            </HStack>
+          </Box>
+          <Divider />
+        </Box>
+      ))}
+    </List>
+  );
+};
+
 const BookmarkListItem = ({ questionId }: { questionId: string }) => {
   const { data, error } = useQuestion(questionId);
   const isLoading = !data && !error;
@@ -61,7 +99,7 @@ const BookmarkListItem = ({ questionId }: { questionId: string }) => {
       );
     } else {
       return (
-        <Box padding="6">
+        <Box p={6} key={questionId}>
           <HStack>
             <Avatar size={'sm'} src={data?.question.author.avatar} />
             <Heading size={'sm'}>{data?.question.author.name}</Heading>
@@ -93,6 +131,27 @@ const userProfile = () => {
   const { data, error } = useUser(
     Array.isArray(userId) ? userId[0] : userId || '',
   );
+  const [usersQuestions, setUsersQuestions] = useState<
+    (Question & {
+      createdAt: Date;
+      updatedAt: Date;
+    })[]
+  >([]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    const fetchUsersQuestions = async () => {
+      const res = await fetch(`/api/users/${user.uid}/questions`);
+      const data = await res.json();
+      setUsersQuestions(data);
+    };
+    fetchUsersQuestions();
+    return () => {
+      fetchUsersQuestions();
+    };
+  }, [data]);
 
   if (!data)
     return (
@@ -167,7 +226,11 @@ const userProfile = () => {
 
             <TabPanels>
               <TabPanel>
-                <Heading fontSize={'lg'}>No questions yet</Heading>
+                {usersQuestions.length ? (
+                  <UsersQuestionsList usersQuestions={usersQuestions} />
+                ) : (
+                  <Heading fontSize={'lg'}>No questions yet</Heading>
+                )}
               </TabPanel>
               <TabPanel>
                 {data.user.bookmarks.length ? (
