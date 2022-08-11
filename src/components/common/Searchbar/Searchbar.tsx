@@ -1,3 +1,4 @@
+import { useInputFocusContext } from '@/contexts/InputFocusContext';
 import {
   FormControl,
   Input,
@@ -8,12 +9,38 @@ import {
   StyleProps,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { BiSearch } from 'react-icons/bi';
 
 function Searchbar(props: StyleProps) {
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { isFocus, setIsFocus } = useInputFocusContext();
   const [value, setValue] = useState('');
+
+  useHotkeys(
+    '/',
+    () => {
+      setIsFocus(true);
+    },
+    { keyup: true },
+  );
+  useHotkeys(
+    'escape',
+    () => {
+      setIsFocus(false);
+    },
+    { enableOnTags: ['INPUT'] },
+  );
+
+  useEffect(() => {
+    if (isFocus) {
+      inputRef.current?.focus();
+    } else {
+      inputRef.current?.blur();
+    }
+  }, [isFocus]);
 
   return (
     <FormControl {...props}>
@@ -35,6 +62,9 @@ function Searchbar(props: StyleProps) {
               // setValue('');
             }
           }}
+          ref={inputRef}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
         <InputRightElement>
           <Kbd color={'blackAlpha.600'}>/</Kbd>
