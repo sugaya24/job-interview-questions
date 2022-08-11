@@ -220,8 +220,7 @@ const userProfile = () => {
           <Tabs my={8}>
             <TabList>
               <Tab>Questions</Tab>
-              <Tab>Saved</Tab>
-              <Tab>Following</Tab>
+              {currentUser?.uid === userId && <Tab>Saved</Tab>}
             </TabList>
 
             <TabPanels>
