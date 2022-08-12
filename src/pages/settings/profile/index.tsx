@@ -107,8 +107,10 @@ const editProfile = () => {
       `/api/s3/getObjectUrl?key=${currentUser?.uid}.${extension}`,
     );
     const dataGetImage = await resGetImage.json();
-    setCurrentUser({ ...currentUser!, photoURL: '' });
-    setCurrentUser({ ...currentUser!, photoURL: dataGetImage?.s3ObjectUrl });
+    setCurrentUser({
+      ...currentUser!,
+      photoURL: dataGetImage?.s3ObjectUrl + `?${Date.now()}`,
+    });
   };
 
   async function onSubmit(values: User) {
