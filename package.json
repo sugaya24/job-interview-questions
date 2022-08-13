@@ -7,7 +7,8 @@
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
     "prepare": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "db:seed": "ts-node --project ./tsconfig.seeder.json ./src/lib/seed.ts"
   },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
@@ -23,9 +24,11 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@lexical/react": "^0.3.2",
+    "@ngneat/falso": "^6.1.0",
     "@zag-js/react": "^0.1.12",
     "@zag-js/tags-input": "^0.2.2",
     "date-fns": "^2.28.0",
+    "dotenv": "^16.0.1",
     "firebase": "^9.8.3",
     "framer-motion": "^6",
     "html-react-parser": "^1.4.14",
@@ -63,6 +66,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^12.4.2",
     "prettier": "^2.6.2",
+    "ts-node": "^10.9.1",
     "typescript": "4.3.2"
   },
   "config": {
