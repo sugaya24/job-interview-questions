@@ -12,6 +12,7 @@ import path from 'path';
 
 import { Question as TQuestion, User as TUser } from '../common';
 import Question from '../models/Question';
+import Tag from '../models/Tag';
 import User from '../models/User';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -76,6 +77,21 @@ const runSeed = async () => {
     process.exit(1);
   }
 
+  try {
+    const questions = await Question.find({});
+    const dummyTags: { tagId: string; name: string }[] = [];
+    questions.forEach((q) => {
+      q.tags.forEach((tag) => {
+        if (dummyTags.findIndex((t) => tag === t.tagId) === -1) {
+          dummyTags.push({ tagId: tag, name: tag });
+        }
+      });
+    });
+    await Tag.deleteMany();
+    await Tag.insertMany(dummyTags);
+  } catch {
+    process.exit(1);
+  }
   console.log('seeding done!');
   mongoose.connection.close();
 };
