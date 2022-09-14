@@ -136,7 +136,7 @@ const QuestionsCard = (props: Props) => {
         </HStack>
         <Box className={'main-text'}>
           <NextLink href={`/questions/${question.questionId}`} passHref>
-            <Link>
+            <Link _visited={{ color: 'gray.400' }}>
               <Heading as={'h2'} fontSize={'xl'}>
                 {question.title}
               </Heading>
@@ -144,22 +144,8 @@ const QuestionsCard = (props: Props) => {
           </NextLink>
         </Box>
         <HStack className={'bottom-part'}>
-          {question.tags.map((tag, index) => (
-            <NextLink key={index} href={`/tags/${tag}`} passHref>
-              <Link
-                _hover={{
-                  textDecor: 'none',
-                }}
-              >
-                <Tag
-                  _hover={{
-                    color: 'blackAlpha.600',
-                  }}
-                >
-                  {tag}
-                </Tag>
-              </Link>
-            </NextLink>
+          {question.tags.map((tag, i) => (
+            <Tag key={i}>{tag}</Tag>
           ))}
           <Spacer />
           <HStack>
